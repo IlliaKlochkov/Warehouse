@@ -1,4 +1,4 @@
-﻿namespace Kursova.UI
+﻿namespace Warehouse.UI
 {
     partial class StartForm
     {
@@ -121,7 +121,9 @@
             Controls.Add(panel2);
             Controls.Add(panel1);
             Name = "StartForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "StartForm";
+            Shown += StartForm_Shown;
             ResumeLayout(false);
             PerformLayout();
         }

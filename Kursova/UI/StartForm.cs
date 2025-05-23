@@ -1,47 +1,66 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using Warehouse.DatabaseRepo;
 
-namespace Kursova.UI
+namespace Warehouse.UI;
+
+public partial class StartForm : Form
 {
-    public partial class StartForm : Form
+    private DatabaseManager _databaseManager = new DatabaseManager();
+    private Database _database = new Database();
+    public StartForm()
     {
-        public StartForm()
+        InitializeComponent();
+    }
+
+    private void StartForm_Shown(object sender, EventArgs e)
+    {
+        Database? previousProject = _databaseManager.LoadDataFromFile();
+        if (previousProject != null)
         {
-            InitializeComponent();
+            _database = previousProject;
+            LoadWorkplace(_database);
         }
+    }
 
-        private void buttonCreateProject_Click(object sender, EventArgs e)
+
+    private void LoadWorkplace(Database _database)
+    {
+        Workspace workspace = new Workspace(_database);
+        workspace.FormClosed += (s, e) =>
         {
-            Workspace workspace = new Workspace();
-            workspace.FormClosed += (s, e) => this.Close();
-            workspace.Show();
+            _databaseManager.SaveData(_database);
+            this.Close();
+        };
 
-            this.Hide();
-        }
+        workspace.Show();
+        this.Hide();
+    }
 
-        private void buttonOpenProject_Click(object sender, EventArgs e)
+
+    private void buttonCreateProject_Click(object sender, EventArgs e)
+    {
+        LoadWorkplace(_database);
+    }
+
+    private void buttonOpenProject_Click(object sender, EventArgs e)
+    {
+        using var file = new OpenFileDialog
         {
-            using var file = new OpenFileDialog
-            {
-                Filter = "Text Files (*.json)|*.json|All Files (*.*)|*.*"
-            };
-            if (file.ShowDialog() == DialogResult.OK)
-            {
+            Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*"
+        };
 
-                Workspace workspace = new Workspace();
-                workspace.FormClosed += (s, e) => this.Close();
-                workspace.Show();
 
-                this.Hide();
+        if (file.ShowDialog() == DialogResult.OK)
+        {
+            string filepath = file.FileName;
+            var _database = _databaseManager.LoadDataFromFile(filepath);
+
+            if (_database == null)
+            {
+                MessageBox.Show($"Виникла помилка при загрузці проекту \n {_database}", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
+            LoadWorkplace(_database);
         }
     }
 }

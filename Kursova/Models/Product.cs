@@ -1,26 +1,29 @@
-﻿namespace Kursova.Models;
+﻿namespace Warehouse.Models;
 
 public class Product
 {
+    public int Id { get; set; }
     public string Name { get; set; }
     public string MeasureUnit { get; set; }
     public double PricePerUnit { get; set; }
-    public double Quantity { get; set; }
+    public int Quantity { get; set; }
     public DateTime LastDeliveryDate { get; set; }
     public double TotalPrice { get; set; }
 
-    public Product(string name, string measureUnit, double pricePerUnit, double quantity, DateTime? lastDeliveryDate)
+    public Product(int Id, string Name, string MeasureUnit, double PricePerUnit, int Quantity, DateTime LastDeliveryDate)
     {
-        Name = name;
-        MeasureUnit = measureUnit;
-        PricePerUnit = pricePerUnit;
-        Quantity = quantity;
-        LastDeliveryDate = lastDeliveryDate.HasValue ? lastDeliveryDate.Value : DateTime.Now;
-        TotalPrice = Quantity * PricePerUnit;
+        this.Id = Id;
+        this.Name = Name;
+        this.MeasureUnit = MeasureUnit;
+        this.PricePerUnit = PricePerUnit;
+        this.Quantity = Quantity;
+        this.LastDeliveryDate = LastDeliveryDate;
+        this.TotalPrice = Quantity * PricePerUnit;
     }
 
 
-    public void UpdateQuantity(double amount)
+
+    public void UpdateQuantity(int amount)
     {
         if (Quantity + amount < 0)
         {

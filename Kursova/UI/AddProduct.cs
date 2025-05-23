@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using Warehouse.DatabaseRepo;
+using Warehouse.Models;
 
-using Kursova.DatabaseRepo;
-using Kursova.Models;
-
-namespace Kursova.UI;
-
+namespace Warehouse.UI;
 public partial class AddProduct : Form
 {
     private Database _database;
@@ -28,17 +17,51 @@ public partial class AddProduct : Form
     {
         string name = textBoxProductName.Text;
         string measureUnit = textBoxProductMeasureUnit.Text;
-        int quantity = int.Parse(textBoxProductQuantity.Text);
-        int pricePerUnit = int.Parse(textBoxPricePerUnit.Text);
+        string rawQuantity = textBoxProductQuantity.Text;
+        string rawPricePerUnit = textBoxPricePerUnit.Text;
         DateTime lastDeliveryDate = dateTimePickerProductTime.Value;
 
-        Product product = new Product(name, measureUnit, pricePerUnit, quantity, lastDeliveryDate);
+        int quantity;
+        int pricePerUnit;
 
+        if (name == string.Empty || measureUnit == string.Empty || rawQuantity == string.Empty || rawPricePerUnit == string.Empty)
+        {
+            MessageBox.Show("Будь ласка заповніть всі поля", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        quantity = int.Parse(textBoxProductQuantity.Text);
+        pricePerUnit = int.Parse(textBoxPricePerUnit.Text);
+
+        if (quantity <= 0 || pricePerUnit <= 0)
+        {
+            MessageBox.Show("Кількість та ціна не можуть бути менші за 0", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return;
+        }
+
+        int id = _database.GetNextProductId();
+
+        Product product = new Product(id, name, measureUnit, pricePerUnit, quantity, lastDeliveryDate);
         _database.AddProduct(product);
 
-        ProductAdded?.Invoke(this, EventArgs.Empty); 
+        ProductAdded?.Invoke(this, EventArgs.Empty);
 
-        this.Close(); 
+        this.Close();
     }
 
+    private void enableOnlyLetterInput(object sender, KeyPressEventArgs e)
+    {
+        if (!char.IsLetter(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+        {
+            e.Handled = true;
+        }
+    }
+
+    private void enableOnlyDigitInput(object sender, KeyPressEventArgs e)
+    {
+        if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+        {
+            e.Handled = true;
+        }
+    }
 }

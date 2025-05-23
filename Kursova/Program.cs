@@ -1,6 +1,6 @@
-using Kursova.UI;
+using Warehouse.UI;
 
-namespace Kursova
+namespace Warehouse
 {
     internal static class Program
     {

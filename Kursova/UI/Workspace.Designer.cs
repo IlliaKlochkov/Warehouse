@@ -1,4 +1,4 @@
-﻿namespace Kursova.UI
+﻿namespace Warehouse.UI
 {
     partial class Workspace
     {
@@ -59,21 +59,26 @@
             searchToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator5 = new ToolStripSeparator();
             aboutToolStripMenuItem = new ToolStripMenuItem();
-            menuStrip2 = new MenuStrip();
-            toolStripMenuItem1 = new ToolStripMenuItem();
-            списатиToolStripMenuItem = new ToolStripMenuItem();
             panel1 = new Panel();
-            dataGridView1 = new DataGridView();
-            LastDeliveryDate = new DataGridViewTextBoxColumn();
+            dataGridView_products = new DataGridView();
+            Id = new DataGridViewTextBoxColumn();
             ProductName = new DataGridViewTextBoxColumn();
             MeasureUnit = new DataGridViewTextBoxColumn();
             Quantity = new DataGridViewTextBoxColumn();
             PricePerUnit = new DataGridViewTextBoxColumn();
             TotalPrice = new DataGridViewTextBoxColumn();
+            LastDeliveryDate = new DataGridViewTextBoxColumn();
+            toolStripMenuItem_addProduct = new ToolStripMenuItem();
+            ToolStripMenuItem_removeProduct = new ToolStripMenuItem();
+            ToolStripMenuItem_editProduct = new ToolStripMenuItem();
+            menuStrip2 = new MenuStrip();
+            ToolStripMenuItem_editQuantity = new ToolStripMenuItem();
+            toolStripTextBox1 = new ToolStripTextBox();
+            пршукToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
-            menuStrip2.SuspendLayout();
             panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView_products).BeginInit();
+            menuStrip2.SuspendLayout();
             SuspendLayout();
             // 
             // menuStrip1
@@ -90,8 +95,8 @@
             // 
             fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { newToolStripMenuItem, openToolStripMenuItem, toolStripSeparator, saveToolStripMenuItem, saveAsToolStripMenuItem, toolStripSeparator1, printToolStripMenuItem, printPreviewToolStripMenuItem, toolStripSeparator2, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            fileToolStripMenuItem.Size = new Size(46, 24);
-            fileToolStripMenuItem.Text = "&File";
+            fileToolStripMenuItem.Size = new Size(59, 24);
+            fileToolStripMenuItem.Text = "&Файл";
             // 
             // newToolStripMenuItem
             // 
@@ -283,66 +288,42 @@
             aboutToolStripMenuItem.Size = new Size(150, 26);
             aboutToolStripMenuItem.Text = "&About...";
             // 
-            // menuStrip2
-            // 
-            menuStrip2.AutoSize = false;
-            menuStrip2.Dock = DockStyle.Right;
-            menuStrip2.ImageScalingSize = new Size(20, 20);
-            menuStrip2.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1, списатиToolStripMenuItem });
-            menuStrip2.Location = new Point(1103, 28);
-            menuStrip2.Name = "menuStrip2";
-            menuStrip2.Size = new Size(159, 725);
-            menuStrip2.TabIndex = 1;
-            menuStrip2.Text = "menuStrip2";
-            menuStrip2.ItemClicked += menuStrip2_ItemClicked;
-            // 
-            // toolStripMenuItem1
-            // 
-            toolStripMenuItem1.AutoSize = false;
-            toolStripMenuItem1.Name = "toolStripMenuItem1";
-            toolStripMenuItem1.Size = new Size(152, 40);
-            toolStripMenuItem1.Text = "Додати ";
-            toolStripMenuItem1.Click += toolStripMenuItem1_Click;
-            // 
-            // списатиToolStripMenuItem
-            // 
-            списатиToolStripMenuItem.AutoSize = false;
-            списатиToolStripMenuItem.Name = "списатиToolStripMenuItem";
-            списатиToolStripMenuItem.Size = new Size(152, 40);
-            списатиToolStripMenuItem.Text = "Списати";
-            // 
             // panel1
             // 
-            panel1.Controls.Add(dataGridView1);
+            panel1.Controls.Add(dataGridView_products);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(0, 28);
             panel1.Name = "panel1";
-            panel1.Size = new Size(1103, 725);
+            panel1.Size = new Size(1087, 725);
             panel1.TabIndex = 2;
             // 
-            // dataGridView1
+            // dataGridView_products
             // 
-            dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { LastDeliveryDate, ProductName, MeasureUnit, Quantity, PricePerUnit, TotalPrice });
-            dataGridView1.Dock = DockStyle.Fill;
-            dataGridView1.Location = new Point(0, 0);
-            dataGridView1.MultiSelect = false;
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.ReadOnly = true;
-            dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(1103, 725);
-            dataGridView1.TabIndex = 1;
-            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
-            dataGridView1.ColumnHeaderMouseClick += dataGridView1_ColumnHeaderMouseClick;
+            dataGridView_products.AllowUserToAddRows = false;
+            dataGridView_products.AllowUserToDeleteRows = false;
+            dataGridView_products.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            dataGridView_products.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView_products.Columns.AddRange(new DataGridViewColumn[] { Id, ProductName, MeasureUnit, Quantity, PricePerUnit, TotalPrice, LastDeliveryDate });
+            dataGridView_products.Dock = DockStyle.Fill;
+            dataGridView_products.Location = new Point(0, 0);
+            dataGridView_products.MultiSelect = false;
+            dataGridView_products.Name = "dataGridView_products";
+            dataGridView_products.ReadOnly = true;
+            dataGridView_products.RowHeadersWidth = 51;
+            dataGridView_products.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView_products.Size = new Size(1087, 725);
+            dataGridView_products.TabIndex = 1;
+            dataGridView_products.ColumnHeaderMouseClick += dataGridView1_ColumnHeaderMouseClick;
+            dataGridView_products.KeyDown += dataGridView_products_KeyDown;
             // 
-            // LastDeliveryDate
+            // Id
             // 
-            LastDeliveryDate.DataPropertyName = "LastDeliveryDate";
-            LastDeliveryDate.HeaderText = "Дата завезення (Остання)";
-            LastDeliveryDate.MinimumWidth = 6;
-            LastDeliveryDate.Name = "LastDeliveryDate";
-            LastDeliveryDate.ReadOnly = true;
+            Id.DataPropertyName = "Id";
+            Id.FillWeight = 30F;
+            Id.HeaderText = "Id";
+            Id.MinimumWidth = 6;
+            Id.Name = "Id";
+            Id.ReadOnly = true;
             // 
             // ProductName
             // 
@@ -355,6 +336,7 @@
             // MeasureUnit
             // 
             MeasureUnit.DataPropertyName = "MeasureUnit";
+            MeasureUnit.FillWeight = 70F;
             MeasureUnit.HeaderText = "Од. виміру";
             MeasureUnit.MinimumWidth = 6;
             MeasureUnit.Name = "MeasureUnit";
@@ -384,6 +366,72 @@
             TotalPrice.Name = "TotalPrice";
             TotalPrice.ReadOnly = true;
             // 
+            // LastDeliveryDate
+            // 
+            LastDeliveryDate.DataPropertyName = "LastDeliveryDate";
+            LastDeliveryDate.HeaderText = "Дата завезення (Остання)";
+            LastDeliveryDate.MinimumWidth = 6;
+            LastDeliveryDate.Name = "LastDeliveryDate";
+            LastDeliveryDate.ReadOnly = true;
+            // 
+            // toolStripMenuItem_addProduct
+            // 
+            toolStripMenuItem_addProduct.AutoSize = false;
+            toolStripMenuItem_addProduct.Name = "toolStripMenuItem_addProduct";
+            toolStripMenuItem_addProduct.Size = new Size(152, 40);
+            toolStripMenuItem_addProduct.Text = "Додати ";
+            toolStripMenuItem_addProduct.Click += toolStripMenuItem_addProduct_Click;
+            // 
+            // ToolStripMenuItem_removeProduct
+            // 
+            ToolStripMenuItem_removeProduct.AutoSize = false;
+            ToolStripMenuItem_removeProduct.Name = "ToolStripMenuItem_removeProduct";
+            ToolStripMenuItem_removeProduct.Size = new Size(152, 40);
+            ToolStripMenuItem_removeProduct.Text = "Видалити";
+            ToolStripMenuItem_removeProduct.Click += ToolStripMenuItem_removeProduct_Click;
+            // 
+            // ToolStripMenuItem_editProduct
+            // 
+            ToolStripMenuItem_editProduct.AutoSize = false;
+            ToolStripMenuItem_editProduct.Name = "ToolStripMenuItem_editProduct";
+            ToolStripMenuItem_editProduct.Size = new Size(152, 40);
+            ToolStripMenuItem_editProduct.Text = "Редагувати";
+            ToolStripMenuItem_editProduct.Click += ToolStripMenuItem_editProduct_Click;
+            // 
+            // menuStrip2
+            // 
+            menuStrip2.AutoSize = false;
+            menuStrip2.Dock = DockStyle.Right;
+            menuStrip2.ImageScalingSize = new Size(20, 20);
+            menuStrip2.Items.AddRange(new ToolStripItem[] { toolStripMenuItem_addProduct, ToolStripMenuItem_removeProduct, ToolStripMenuItem_editProduct, ToolStripMenuItem_editQuantity, toolStripTextBox1, пршукToolStripMenuItem });
+            menuStrip2.Location = new Point(1087, 28);
+            menuStrip2.Name = "menuStrip2";
+            menuStrip2.Size = new Size(175, 725);
+            menuStrip2.TabIndex = 1;
+            menuStrip2.Text = "menuStrip2";
+            // 
+            // ToolStripMenuItem_editQuantity
+            // 
+            ToolStripMenuItem_editQuantity.AutoSize = false;
+            ToolStripMenuItem_editQuantity.Name = "ToolStripMenuItem_editQuantity";
+            ToolStripMenuItem_editQuantity.Size = new Size(168, 40);
+            ToolStripMenuItem_editQuantity.Text = "Поповнення/Списання";
+            ToolStripMenuItem_editQuantity.Click += ToolStripMenuItem_editQuantity_Click;
+            // 
+            // toolStripTextBox1
+            // 
+            toolStripTextBox1.Margin = new Padding(1, 10, 1, 0);
+            toolStripTextBox1.Name = "toolStripTextBox1";
+            toolStripTextBox1.Size = new Size(166, 27);
+            // 
+            // пршукToolStripMenuItem
+            // 
+            пршукToolStripMenuItem.AutoSize = false;
+            пршукToolStripMenuItem.Name = "пршукToolStripMenuItem";
+            пршукToolStripMenuItem.Size = new Size(152, 30);
+            пршукToolStripMenuItem.Text = "Пошук";
+            пршукToolStripMenuItem.Click += пршукToolStripMenuItem_Click;
+            // 
             // Workspace
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -393,14 +441,14 @@
             Controls.Add(menuStrip2);
             Controls.Add(menuStrip1);
             Name = "Workspace";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "MainForm";
-            Load += MainForm_Load;
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
+            panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView_products).EndInit();
             menuStrip2.ResumeLayout(false);
             menuStrip2.PerformLayout();
-            panel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -437,16 +485,21 @@
         private ToolStripMenuItem searchToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator5;
         private ToolStripMenuItem aboutToolStripMenuItem;
-        private MenuStrip menuStrip2;
         private Panel panel1;
-        private DataGridView dataGridView1;
-        private ToolStripMenuItem toolStripMenuItem1;
-        private ToolStripMenuItem списатиToolStripMenuItem;
+        private DataGridView dataGridView_products;
+        private DataGridViewTextBoxColumn Id;
         private DataGridViewTextBoxColumn LastDeliveryDate;
         private DataGridViewTextBoxColumn ProductName;
         private DataGridViewTextBoxColumn MeasureUnit;
         private DataGridViewTextBoxColumn Quantity;
         private DataGridViewTextBoxColumn PricePerUnit;
         private DataGridViewTextBoxColumn TotalPrice;
+        private ToolStripMenuItem toolStripMenuItem_addProduct;
+        private ToolStripMenuItem ToolStripMenuItem_removeProduct;
+        private ToolStripMenuItem ToolStripMenuItem_editProduct;
+        private MenuStrip menuStrip2;
+        private ToolStripTextBox toolStripTextBox1;
+        private ToolStripMenuItem пршукToolStripMenuItem;
+        private ToolStripMenuItem ToolStripMenuItem_editQuantity;
     }
 }

@@ -1,66 +1,125 @@
-﻿using Kursova.Models;
+﻿using Warehouse.Models;
 using System.ComponentModel;
-using System.Text.Json;
 
-namespace Kursova.DatabaseRepo;
+namespace Warehouse.DatabaseRepo;
 
 public class Database
 {
-    private const string FilePath = "products.json";
-    public List<Product> WarehouseTableData { get; private set; }
+    public List<Product> WarehouseTableData { get; set; }
     public BindingList<Product> WarehouseTableView { get; private set; }
+    public int AutoIncrementId { get; set; }
 
-    public Database()
+
+    public Database(int AutoIncrementId = 0)
     {
-        if (File.Exists(FilePath))
-        {
-            string json = File.ReadAllText(FilePath);
-            WarehouseTableData = JsonSerializer.Deserialize<List<Product>>(json) ?? new List<Product>();
-        }
-        else
-        {
-            //Product testProduct = new Product(1, "test", "м", 10, 10);
-            //Product testProduct2 = new Product(2, "test2", "м", 5, 20);
-            WarehouseTableData = new List<Product> { };
-            WarehouseTableView = new BindingList<Product>(WarehouseTableData);
-        }
+        this.AutoIncrementId = AutoIncrementId;
+        WarehouseTableData = new List<Product>();
+        WarehouseTableView = new BindingList<Product>(WarehouseTableData);
     }
 
+    public void RestoreBindingList()
+    {
+        if (WarehouseTableData == null)
+            WarehouseTableData = new List<Product>();
+
+        WarehouseTableView = new BindingList<Product>(WarehouseTableData);
+    }
+
+    public int GetNextProductId()
+    {
+        AutoIncrementId++;
+        return AutoIncrementId;
+    }
+
+    public int GetProductIndexById(int id)
+    {
+        return WarehouseTableData.FindIndex(x => x.Id == id);
+    }
+
+    public bool IsValidIndex(int index)
+    {
+        return index >= 0 && index < WarehouseTableData.Count;
+    }
 
     public void AddProduct(Product product)
     {
         WarehouseTableData.Add(product);
         WarehouseTableView = new BindingList<Product>(WarehouseTableData);
     }
-    public void SortByParametr(string parametr)
-    {
-        List<Product> sortedList;
-        switch (parametr)
-        {
-            case "Name":
-                sortedList = WarehouseTableData.OrderBy(p => p.Name).ToList();
-                break;
-            case "PricePerUnit":
-                sortedList = WarehouseTableData.OrderBy(p => p.PricePerUnit).ToList();
-                break;
-            case "Quantity":
-                sortedList = WarehouseTableData.OrderBy(p => p.Quantity).ToList();
-                break;
-            case "LastDeliveryDate":
-                sortedList = WarehouseTableData.OrderBy(p => p.LastDeliveryDate).ToList();
-                break;
-            default:
-                return; 
-        }
 
-        WarehouseTableData = sortedList;
+    public void RemoveProduct(Product product)
+    {
+        WarehouseTableData.Remove(product);
         WarehouseTableView = new BindingList<Product>(WarehouseTableData);
     }
 
-
-    public void Save()
+    public void EditProduct(int id, string name, string measureUnit, int pricePerUnit)
     {
-        string json = JsonSerializer.Serialize(WarehouseTableData, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText(FilePath, json);
+        int productIndex = GetProductIndexById(id);
+
+        WarehouseTableData[productIndex].Name = name;
+        WarehouseTableData[productIndex].MeasureUnit = measureUnit;
+        WarehouseTableData[productIndex].PricePerUnit = pricePerUnit;
+        WarehouseTableData[productIndex].TotalPrice = WarehouseTableData[productIndex].Quantity * pricePerUnit;
+
+        WarehouseTableView = new BindingList<Product>(WarehouseTableData);
+    }
+
+    public void EditQuantity(int id, int quantity)
+    {
+        int productIndex = GetProductIndexById(id);
+
+        int temp = WarehouseTableData[productIndex].Quantity;
+        WarehouseTableData[productIndex].Quantity = temp + quantity;
+
+        WarehouseTableView = new BindingList<Product>(WarehouseTableData);
+    }
+
+    public void SortByParametr(string parametr, SortOrder sortOrder = SortOrder.Ascending)
+    {
+        List<Product> sortedList;
+
+        switch (parametr)
+        {
+            case "Id":
+                sortedList = sortOrder == SortOrder.Ascending
+                    ? WarehouseTableView.OrderBy(p => p.Id).ToList()
+                    : WarehouseTableView.OrderByDescending(p => p.Id).ToList();
+                break;
+            case "ProductName":
+                sortedList = sortOrder == SortOrder.Ascending
+                    ? WarehouseTableView.OrderBy(p => p.Name).ToList()
+                    : WarehouseTableView.OrderByDescending(p => p.Name).ToList();
+                break;
+            case "MeasureUnit": 
+                sortedList = sortOrder == SortOrder.Ascending
+                    ? WarehouseTableView.OrderBy(p => p.MeasureUnit).ToList()
+                    : WarehouseTableView.OrderByDescending(p => p.MeasureUnit).ToList();
+                break;
+            case "PricePerUnit":
+                sortedList = sortOrder == SortOrder.Ascending
+                    ? WarehouseTableView.OrderBy(p => p.PricePerUnit).ToList()
+                    : WarehouseTableView.OrderByDescending(p => p.PricePerUnit).ToList();
+                break;
+            case "Quantity":
+                sortedList = sortOrder == SortOrder.Ascending
+                    ? WarehouseTableView.OrderBy(p => p.Quantity).ToList()
+                    : WarehouseTableView.OrderByDescending(p => p.Quantity).ToList();
+                break;
+            case "LastDeliveryDate":
+                sortedList = sortOrder == SortOrder.Ascending
+                    ? WarehouseTableView.OrderBy(p => p.LastDeliveryDate).ToList()
+                    : WarehouseTableView.OrderByDescending(p => p.LastDeliveryDate).ToList();
+                break;
+            case "TotalPrice":
+                sortedList = sortOrder == SortOrder.Ascending
+                    ? WarehouseTableView.OrderBy(p => p.TotalPrice).ToList()
+                    : WarehouseTableView.OrderByDescending(p => p.TotalPrice).ToList();
+                break;
+            default:
+                return;
+        }
+
+        WarehouseTableView = new BindingList<Product>(sortedList);
     }
 }

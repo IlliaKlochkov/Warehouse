@@ -1,4 +1,4 @@
-﻿namespace Kursova.UI
+﻿namespace Warehouse.UI
 {
     partial class AddProduct
     {
@@ -62,6 +62,7 @@
             textBoxProductMeasureUnit.Name = "textBoxProductMeasureUnit";
             textBoxProductMeasureUnit.Size = new Size(142, 27);
             textBoxProductMeasureUnit.TabIndex = 3;
+            textBoxProductMeasureUnit.KeyPress += enableOnlyLetterInput;
             // 
             // textBoxProductQuantity
             // 
@@ -69,6 +70,7 @@
             textBoxProductQuantity.Name = "textBoxProductQuantity";
             textBoxProductQuantity.Size = new Size(152, 27);
             textBoxProductQuantity.TabIndex = 4;
+            textBoxProductQuantity.KeyPress += enableOnlyDigitInput;
             // 
             // textBoxPricePerUnit
             // 
@@ -76,6 +78,7 @@
             textBoxPricePerUnit.Name = "textBoxPricePerUnit";
             textBoxPricePerUnit.Size = new Size(160, 27);
             textBoxPricePerUnit.TabIndex = 5;
+            textBoxPricePerUnit.KeyPress += enableOnlyDigitInput;
             // 
             // label1
             // 
@@ -160,6 +163,7 @@
             Controls.Add(dateTimePickerProductTime);
             Controls.Add(textBoxProductName);
             Name = "AddProduct";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "AddProduct";
             ResumeLayout(false);
             PerformLayout();
