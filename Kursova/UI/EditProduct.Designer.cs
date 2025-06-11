@@ -36,11 +36,13 @@
             textBoxEditPricePerUnit = new TextBox();
             textBoxEditMeasureUnit = new TextBox();
             textBoxEditName = new TextBox();
+            label4 = new Label();
+            textBoxEditQuantity = new TextBox();
             SuspendLayout();
             // 
             // buttonEditProduct
             // 
-            buttonEditProduct.Location = new Point(12, 205);
+            buttonEditProduct.Location = new Point(12, 258);
             buttonEditProduct.Name = "buttonEditProduct";
             buttonEditProduct.Size = new Size(319, 47);
             buttonEditProduct.TabIndex = 24;
@@ -51,7 +53,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(187, 126);
+            label5.Location = new Point(187, 119);
             label5.Name = "label5";
             label5.Size = new Size(129, 20);
             label5.TabIndex = 22;
@@ -60,7 +62,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(12, 126);
+            label3.Location = new Point(12, 119);
             label3.Name = "label3";
             label3.Size = new Size(124, 20);
             label3.TabIndex = 20;
@@ -87,7 +89,7 @@
             // 
             // textBoxEditPricePerUnit
             // 
-            textBoxEditPricePerUnit.Location = new Point(187, 149);
+            textBoxEditPricePerUnit.Location = new Point(187, 142);
             textBoxEditPricePerUnit.Name = "textBoxEditPricePerUnit";
             textBoxEditPricePerUnit.Size = new Size(144, 27);
             textBoxEditPricePerUnit.TabIndex = 17;
@@ -95,7 +97,7 @@
             // 
             // textBoxEditMeasureUnit
             // 
-            textBoxEditMeasureUnit.Location = new Point(12, 149);
+            textBoxEditMeasureUnit.Location = new Point(12, 142);
             textBoxEditMeasureUnit.Name = "textBoxEditMeasureUnit";
             textBoxEditMeasureUnit.Size = new Size(142, 27);
             textBoxEditMeasureUnit.TabIndex = 15;
@@ -108,11 +110,30 @@
             textBoxEditName.Size = new Size(319, 27);
             textBoxEditName.TabIndex = 13;
             // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(12, 179);
+            label4.Name = "label4";
+            label4.Size = new Size(70, 20);
+            label4.TabIndex = 26;
+            label4.Text = "Кількість";
+            // 
+            // textBoxEditQuantity
+            // 
+            textBoxEditQuantity.Enabled = false;
+            textBoxEditQuantity.Location = new Point(12, 202);
+            textBoxEditQuantity.Name = "textBoxEditQuantity";
+            textBoxEditQuantity.Size = new Size(319, 27);
+            textBoxEditQuantity.TabIndex = 25;
+            // 
             // EditProduct
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(343, 269);
+            ClientSize = new Size(343, 317);
+            Controls.Add(label4);
+            Controls.Add(textBoxEditQuantity);
             Controls.Add(buttonEditProduct);
             Controls.Add(label5);
             Controls.Add(label3);
@@ -138,5 +159,7 @@
         private TextBox textBoxEditPricePerUnit;
         private TextBox textBoxEditMeasureUnit;
         private TextBox textBoxEditName;
+        private Label label4;
+        private TextBox textBoxEditQuantity;
     }
 }

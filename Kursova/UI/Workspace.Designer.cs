@@ -75,7 +75,7 @@
             toolStripTextBox_SearchByName = new ToolStripTextBox();
             ToolStripMenuItem_SearchByName = new ToolStripMenuItem();
             ToolStripMenuItem_FilterProduct = new ToolStripMenuItem();
-            toolStripMenuItem3 = new ToolStripMenuItem();
+            ToolStripMenuItem_Invoice = new ToolStripMenuItem();
             друкToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             panel1.SuspendLayout();
@@ -407,7 +407,7 @@
             menuStrip2.AutoSize = false;
             menuStrip2.Dock = DockStyle.Right;
             menuStrip2.ImageScalingSize = new Size(20, 20);
-            menuStrip2.Items.AddRange(new ToolStripItem[] { toolStripTextBox_SearchByName, ToolStripMenuItem_SearchByName, ToolStripMenuItem_FilterProduct, toolStripMenuItem3, ToolStripMenuItem_editProduct, ToolStripMenuItem_removeProduct, друкToolStripMenuItem });
+            menuStrip2.Items.AddRange(new ToolStripItem[] { toolStripTextBox_SearchByName, ToolStripMenuItem_SearchByName, ToolStripMenuItem_FilterProduct, ToolStripMenuItem_Invoice, ToolStripMenuItem_editProduct, ToolStripMenuItem_removeProduct, друкToolStripMenuItem });
             menuStrip2.Location = new Point(1087, 28);
             menuStrip2.Name = "menuStrip2";
             menuStrip2.Padding = new Padding(6, 2, 6, 2);
@@ -439,13 +439,13 @@
             ToolStripMenuItem_FilterProduct.Text = "Фільтрувати";
             ToolStripMenuItem_FilterProduct.Click += ToolStripMenuItem_FilterProduct_Click;
             // 
-            // toolStripMenuItem3
+            // ToolStripMenuItem_Invoice
             // 
-            toolStripMenuItem3.AutoSize = false;
-            toolStripMenuItem3.Name = "toolStripMenuItem3";
-            toolStripMenuItem3.Size = new Size(168, 40);
-            toolStripMenuItem3.Text = "Формування накладної";
-            toolStripMenuItem3.Click += toolStripMenuItem3_Click;
+            ToolStripMenuItem_Invoice.AutoSize = false;
+            ToolStripMenuItem_Invoice.Name = "ToolStripMenuItem_Invoice";
+            ToolStripMenuItem_Invoice.Size = new Size(168, 40);
+            ToolStripMenuItem_Invoice.Text = "Формування накладної";
+            ToolStripMenuItem_Invoice.Click += ToolStripMenuItem_Invoice_Click;
             // 
             // друкToolStripMenuItem
             // 
@@ -523,7 +523,7 @@
         private DataGridViewTextBoxColumn PricePerUnit;
         private DataGridViewTextBoxColumn TotalPrice;
         private ToolStripMenuItem ToolStripMenuItem_FilterProduct;
-        private ToolStripMenuItem toolStripMenuItem3;
+        private ToolStripMenuItem ToolStripMenuItem_Invoice;
         private ToolStripMenuItem друкToolStripMenuItem;
     }
 }

@@ -6,15 +6,18 @@ class DatabaseManager
 {
     private const string filePath = "warehouseDatabase.json";
 
-    public void SaveData(Database database)
+    public static void SaveData(Database database)
     {
-        var json = JsonSerializer.Serialize(database, new JsonSerializerOptions { 
-            WriteIndented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+        var json = JsonSerializer.Serialize(database, new JsonSerializerOptions
+        {
+            WriteIndented = true,
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        });
 
         File.WriteAllText(filePath, json);
     }
 
-    public Database? LoadDataFromFile(string filepath = filePath)
+    public static Database? LoadDataFromFile(string filepath = filePath)
     {
         if (!File.Exists(filepath))
             return null;

@@ -4,7 +4,6 @@ namespace Warehouse.UI;
 
 public partial class StartForm : Form
 {
-    private DatabaseManager _databaseManager = new DatabaseManager();
     private Database _database = new Database();
     public StartForm()
     {
@@ -13,7 +12,7 @@ public partial class StartForm : Form
 
     private void StartForm_Shown(object sender, EventArgs e)
     {
-        Database? previousProject = _databaseManager.LoadDataFromFile();
+        Database? previousProject = DatabaseManager.LoadDataFromFile();
         if (previousProject != null)
         {
             _database = previousProject;
@@ -27,7 +26,7 @@ public partial class StartForm : Form
         Workspace workspace = new Workspace(_database);
         workspace.FormClosed += (s, e) =>
         {
-            _databaseManager.SaveData(_database);
+            DatabaseManager.SaveData(_database);
             this.Close();
         };
 
@@ -52,7 +51,7 @@ public partial class StartForm : Form
         if (file.ShowDialog() == DialogResult.OK)
         {
             string filepath = file.FileName;
-            var _database = _databaseManager.LoadDataFromFile(filepath);
+            var _database = DatabaseManager.LoadDataFromFile(filepath);
 
             if (_database == null)
             {

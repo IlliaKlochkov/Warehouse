@@ -79,9 +79,9 @@
             label2.AutoSize = true;
             label2.Location = new Point(12, 53);
             label2.Name = "label2";
-            label2.Size = new Size(41, 20);
+            label2.Size = new Size(189, 20);
             label2.TabIndex = 20;
-            label2.Text = "Дата";
+            label2.Text = "Дата завезення (Остання)";
             // 
             // label3
             // 
@@ -112,7 +112,7 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
-            comboBox1.Location = new Point(249, 144);
+            comboBox1.Location = new Point(252, 143);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(67, 28);
             comboBox1.TabIndex = 26;
@@ -127,7 +127,7 @@
             // label
             // 
             label.AutoSize = true;
-            label.Location = new Point(249, 121);
+            label.Location = new Point(252, 121);
             label.Name = "label";
             label.Size = new Size(70, 20);
             label.TabIndex = 28;

@@ -26,24 +26,25 @@ public class Product
             this.TotalPrice = TotalPrice;
     }
 
-
-
-    public void UpdateQuantity(int amount)
+    public void UpdateTotalPrice()
     {
-        if (Quantity + amount < 0)
-        {
-            throw new InvalidOperationException("Недостатня кількість товару на складі.");
-        }
-        Quantity += amount;
+        TotalPrice = Quantity * PricePerUnit;
     }
 
-    public void UpdateLastDeliveryDate(DateTime deliveryDate)
+    public void UpdateInvoiceProduct(bool inbound, int quantityCanged, DateTime lastDeliveryDate)
     {
-        if (deliveryDate > DateTime.Now)
-        {
-            throw new ArgumentException("Дата не може бути в майбутньому.");
-        }
-        LastDeliveryDate = deliveryDate;
+        quantityCanged = inbound ? quantityCanged : -quantityCanged;
+
+        Quantity += quantityCanged;
+        LastDeliveryDate = lastDeliveryDate;
+
+        UpdateTotalPrice();
+    }
+
+    public Product Copy()
+    {
+        Product productCopy = new Product(Id, Name, MeasureUnit, PricePerUnit, Quantity, FirstAddedDate, LastDeliveryDate, TotalPrice);
+        return productCopy;
     }
 }
 

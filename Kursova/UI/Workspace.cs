@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.Windows.Forms;
-using Warehouse.DatabaseRepo;
-using Warehouse.Models;
+﻿using Warehouse.DatabaseRepo;
 
 namespace Warehouse.UI;
 
@@ -89,65 +86,39 @@ public partial class Workspace : Form
         _database.SortByParametr(sortParametr, _lastSortOrder);
     }
 
-    private void ValidateRowSelection()
-    {
-        if (dataGridView_products.SelectedRows.Count <= 0)
-        {
-            MessageBox.Show("Виберіть рядок для редагування", "Попередження",
-                           MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            throw new InvalidOperationException("Не вибрано рядок");
-        }
-    }
-
-    private void DeleteProductWithConfirmation()
-    {
-        if (dataGridView_products.SelectedRows.Count <= 0)
-        {
-            MessageBox.Show("Виберіть рядок для видалення", "Попередження", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            return;
-        }
-
-        var confirmation = MessageBox.Show("Ви впевнені у своєму виборі?", "Підтвердження", MessageBoxButtons.YesNo);
-
-        if (confirmation == DialogResult.No)
-        {
-            return;
-        }
-
-        if (confirmation == DialogResult.Yes)
-        {
-            var selectedRow = dataGridView_products.SelectedRows[0];
-            var selectedProduct = (Product)selectedRow.DataBoundItem;
-            _database.RemoveProduct(selectedProduct);
-
-        }
-    }
-
     private void dataGridView_products_KeyDown(object sender, KeyEventArgs e)
     {
         if (e.KeyCode == Keys.Delete)
         {
-            DeleteProductWithConfirmation();
+            WarehouseUtils.DeleteProductWithConfirmation(dataGridView_products, _database);
         }
     }
 
-    // Кнопки з меню
-    private void toolStripMenuItem_addProduct_Click(object sender, EventArgs e)
-    {
-        AddProduct addProductForm = new AddProduct(_database);
-        addProductForm.Show();
-    }
 
-    private void ToolStripMenuItem_removeProduct_Click(object sender, EventArgs e)
+    // Кнопки з панелі інструментів
+    private void ToolStripMenuItem_SearchByName_Click(object sender, EventArgs e)
     {
-        DeleteProductWithConfirmation();
+        string searchPrompt = toolStripTextBox_SearchByName.Text;
+        _database.SearchByName(searchPrompt);
+    }
+    private void ToolStripMenuItem_FilterProduct_Click(object sender, EventArgs e)
+    {
+        FilterProduct filterForm = new FilterProduct(_database);
+        filterForm.Show();
+    }
+    private void ToolStripMenuItem_Invoice_Click(object sender, EventArgs e)
+    {
+        InvoiceForm invoiceForm = new InvoiceForm(_database);
+        invoiceForm.ShowDialog();
+
+        dataGridView_products.Refresh();
     }
 
     private void ToolStripMenuItem_editProduct_Click(object sender, EventArgs e)
     {
         try
         {
-            ValidateRowSelection();
+            WarehouseUtils.ValidateRowSelection(dataGridView_products);
             DataGridViewRow selectedRow = dataGridView_products.SelectedRows[0];
             EditProduct editProductForm = new EditProduct(_database, selectedRow);
 
@@ -159,33 +130,26 @@ public partial class Workspace : Form
         }
     }
 
-    private void ToolStripMenuItem_editQuantity_Click(object sender, EventArgs e)
+    private void ToolStripMenuItem_removeProduct_Click(object sender, EventArgs e)
     {
-        try
+        WarehouseUtils.DeleteProductWithConfirmation(dataGridView_products, _database);
+    }
+
+
+    // Обробники подій для кнопок панелі інструментів
+    private void toolStripTextBox_SearchByName_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter)
         {
-            ValidateRowSelection();
-            DataGridViewRow selectedRow = dataGridView_products.SelectedRows[0];
-            EditingQuantity editQuantityForm = new EditingQuantity(_database, selectedRow);
-            editQuantityForm.Show();
-        }
-        catch (InvalidOperationException)
-        {
-
+            string searchPrompt = toolStripTextBox_SearchByName.Text;
+            _database.SearchByName(searchPrompt);
+            e.Handled = true;
+            e.SuppressKeyPress = true;
         }
     }
 
-    private void ToolStripMenuItem_FilterProduct_Click(object sender, EventArgs e)
-    {
-        FilterProduct filterForm = new FilterProduct(_database);
-        filterForm.Show();
-    }
 
-    private void ToolStripMenuItem_SearchByName_Click(object sender, EventArgs e)
-    {
-        string searchPrompt = toolStripTextBox_SearchByName.Text;
-        _database.SearchByName(searchPrompt);
-    }
-
+    //Кнопки з горизонтального меню
     private void openToolStripMenuItem_Click(object sender, EventArgs e)
     {
         using var file = new OpenFileDialog
@@ -196,7 +160,7 @@ public partial class Workspace : Form
         if (file.ShowDialog() == DialogResult.OK)
         {
             string filepath = file.FileName;
-            var database = _databaseManager.LoadDataFromFile(filepath);
+            var database = DatabaseManager.LoadDataFromFile(filepath);
 
             if (database == null)
             {
@@ -220,11 +184,6 @@ public partial class Workspace : Form
         }
     }
 
-    private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-
-    }
-
     private void newToolStripMenuItem_Click(object sender, EventArgs e)
     {
         // Відписуємося від попередньої бази даних
@@ -242,29 +201,12 @@ public partial class Workspace : Form
         UpdateDataGridView();
     }
 
-    private void toolStripTextBox_SearchByName_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.KeyCode == Keys.Enter)
-        {
-            string searchPrompt = toolStripTextBox_SearchByName.Text;
-            _database.SearchByName(searchPrompt);
-            e.Handled = true;
-            e.SuppressKeyPress = true;
-        }
-    }
-
     protected override void OnFormClosed(FormClosedEventArgs e)
     {
-        // Відписуємося від подій при закритті форми
         if (_database != null)
         {
             _database.SortChanged -= OnSortChanged;
         }
         base.OnFormClosed(e);
-    }
-
-    private void toolStripMenuItem3_Click(object sender, EventArgs e)
-    {
-
     }
 }

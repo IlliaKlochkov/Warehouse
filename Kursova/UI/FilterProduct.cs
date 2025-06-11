@@ -39,10 +39,10 @@ namespace Warehouse.UI
                 int? quantityValue = GetIntegerValue(textBoxFilterQuantity.Text);
 
                 string priceOperator = comboBox2.SelectedItem?.ToString();
-                double? priceValue = GetDoubleValue(textBoxFilterPricePerUnit.Text); // Змінено на double
+                double? priceValue = GetDoubleValue(textBoxFilterPricePerUnit.Text);
 
                 string totalPriceOperator = comboBox3.SelectedItem?.ToString();
-                double? totalPriceValue = GetDoubleValue(textBoxFilterTotalPrice.Text); // Змінено на double
+                double? totalPriceValue = GetDoubleValue(textBoxFilterTotalPrice.Text);
 
                 _database.ApplyFilter(dateFrom, dateTo, measureUnit,
                                     quantityOperator, quantityValue,
@@ -50,10 +50,6 @@ namespace Warehouse.UI
                                     totalPriceOperator, totalPriceValue);
 
                 FilterApplied?.Invoke(this, EventArgs.Empty);
-
-                MessageBox.Show("Фільтр успішно застосовано!", "Інформація",
-                               MessageBoxButtons.OK, MessageBoxIcon.Information);
-                
             }
             catch (FormatException)
             {

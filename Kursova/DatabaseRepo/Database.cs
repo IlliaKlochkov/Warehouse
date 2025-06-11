@@ -1,12 +1,13 @@
-﻿using Warehouse.Models;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Text.Json.Serialization;
+using Warehouse.Models;
 
 namespace Warehouse.DatabaseRepo;
 
 public class Database
 {
     public List<Product> WarehouseTableData { get; set; }
+    [JsonIgnore]
     public BindingList<Product> WarehouseTableView { get; private set; }
     public int AutoIncrementId { get; set; }
 
@@ -25,6 +26,7 @@ public class Database
 
         RefreshView();
     }
+
 
     public void RestoreBindingList()
     {
@@ -45,9 +47,26 @@ public class Database
         return WarehouseTableData.FindIndex(x => x.Id == id);
     }
 
+    public Product? GetProductById(int id)
+    {
+        var index = GetProductIndexById(id);
+        if (!IsValidIndex(index))
+        {
+            return null;
+        }
+
+        return this[index];
+    }
+
     public bool IsValidIndex(int index)
     {
         return index >= 0 && index < WarehouseTableData.Count;
+    }
+
+    public bool IsUniqueProduct(Product product)
+    {
+        return !WarehouseTableData.Any(p => p.Id == product.Id ||
+                                           p.Name.Equals(product.Name, StringComparison.OrdinalIgnoreCase));
     }
 
     public void AddProduct(Product product)
@@ -79,7 +98,7 @@ public class Database
         }
     }
 
-    public void EditProduct(int id, string name, string measureUnit, int pricePerUnit)
+    public void EditProduct(int id, string name, string measureUnit, int pricePerUnit, int Quantity)
     {
         int productIndex = GetProductIndexById(id);
 
@@ -89,6 +108,8 @@ public class Database
         product.Name = name;
         product.MeasureUnit = measureUnit;
         product.PricePerUnit = pricePerUnit;
+        product.Quantity = Quantity;
+        product.UpdateTotalPrice();
 
         NotifyItemChanged(product);
     }
