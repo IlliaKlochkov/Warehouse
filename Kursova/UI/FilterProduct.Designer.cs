@@ -99,7 +99,6 @@
             textBoxFilterMeasureUnit.Name = "textBoxFilterMeasureUnit";
             textBoxFilterMeasureUnit.Size = new Size(201, 27);
             textBoxFilterMeasureUnit.TabIndex = 22;
-            textBoxFilterMeasureUnit.TextChanged += textBox1_TextChanged;
             // 
             // label4
             // 
@@ -117,7 +116,6 @@
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(67, 28);
             comboBox1.TabIndex = 26;
-            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
             // textBoxFilterQuantity
             // 
@@ -125,7 +123,6 @@
             textBoxFilterQuantity.Name = "textBoxFilterQuantity";
             textBoxFilterQuantity.Size = new Size(125, 27);
             textBoxFilterQuantity.TabIndex = 27;
-            textBoxFilterQuantity.TextChanged += textBox3_TextChanged;
             // 
             // label
             // 
@@ -151,7 +148,6 @@
             textBoxFilterPricePerUnit.Name = "textBoxFilterPricePerUnit";
             textBoxFilterPricePerUnit.Size = new Size(125, 27);
             textBoxFilterPricePerUnit.TabIndex = 30;
-            textBoxFilterPricePerUnit.TextChanged += textBox4_TextChanged;
             // 
             // comboBox2
             // 
@@ -160,7 +156,6 @@
             comboBox2.Name = "comboBox2";
             comboBox2.Size = new Size(67, 28);
             comboBox2.TabIndex = 29;
-            comboBox2.SelectedIndexChanged += comboBox2_SelectedIndexChanged;
             // 
             // label5
             // 
@@ -177,7 +172,6 @@
             textBoxFilterTotalPrice.Name = "textBoxFilterTotalPrice";
             textBoxFilterTotalPrice.Size = new Size(125, 27);
             textBoxFilterTotalPrice.TabIndex = 33;
-            textBoxFilterTotalPrice.TextChanged += textBox5_TextChanged;
             // 
             // comboBox3
             // 
@@ -186,7 +180,6 @@
             comboBox3.Name = "comboBox3";
             comboBox3.Size = new Size(67, 28);
             comboBox3.TabIndex = 32;
-            comboBox3.SelectedIndexChanged += comboBox3_SelectedIndexChanged;
             // 
             // buttonApplyFilterProduct
             // 
@@ -196,6 +189,7 @@
             buttonApplyFilterProduct.TabIndex = 35;
             buttonApplyFilterProduct.Text = "Застосувати";
             buttonApplyFilterProduct.UseVisualStyleBackColor = true;
+            buttonApplyFilterProduct.Click += buttonApplyFilterProduct_Click;
             // 
             // buttonResetFilterProduct
             // 
@@ -205,6 +199,7 @@
             buttonResetFilterProduct.TabIndex = 36;
             buttonResetFilterProduct.Text = "Скинути";
             buttonResetFilterProduct.UseVisualStyleBackColor = true;
+            buttonResetFilterProduct.Click += buttonResetFilterProduct_Click;
             // 
             // FilterProduct
             // 
@@ -230,6 +225,7 @@
             Controls.Add(dateTimePicker2);
             Controls.Add(dateTimePicker1);
             Name = "FilterProduct";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "FilterProduct";
             ResumeLayout(false);
             PerformLayout();

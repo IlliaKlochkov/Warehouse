@@ -19,8 +19,8 @@ public partial class AddProduct : Form
         string measureUnit = textBoxProductMeasureUnit.Text;
         string rawQuantity = textBoxProductQuantity.Text;
         string rawPricePerUnit = textBoxPricePerUnit.Text;
-        DateTime lastDeliveryDate = dateTimePickerProductTime.Value;
-
+        DateTime firstAddedDate = dateTimePickerProductTime.Value;
+        DateTime lastDeliveryDate = firstAddedDate;
         int quantity;
         int pricePerUnit;
 
@@ -41,7 +41,7 @@ public partial class AddProduct : Form
 
         int id = _database.GetNextProductId();
 
-        Product product = new Product(id, name, measureUnit, pricePerUnit, quantity, lastDeliveryDate);
+        Product product = new Product(id, name, measureUnit, pricePerUnit, quantity, firstAddedDate, lastDeliveryDate);
         _database.AddProduct(product);
 
         ProductAdded?.Invoke(this, EventArgs.Empty);

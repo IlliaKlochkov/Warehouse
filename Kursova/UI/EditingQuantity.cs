@@ -6,82 +6,94 @@ namespace Warehouse.UI
     public partial class EditingQuantity : Form
     {
         private Database _database;
-
         public event EventHandler QuantityEdited;
 
-        int productId;
-        int quantity;
+        private int _productId;
+        private int _currentQuantity;
 
         public EditingQuantity(Database database, DataGridViewRow editedRow)
         {
             InitializeComponent();
             _database = database;
 
-            productId = (int)editedRow.Cells["Id"].Value;
-            quantity = (int)Convert.ToDouble(editedRow.Cells["Quantity"].Value);
+            _productId = (int)editedRow.Cells["Id"].Value;
+            _currentQuantity = (int)Convert.ToDouble(editedRow.Cells["Quantity"].Value);
 
-            //textBoxEditQuantity.Text = editedRow.Cells["Quantity"].Value.ToString();
+            // Підключаємо обробник подій для валідації введення
+            textBoxEditQuantity.KeyPress += EnableOnlyDigitInput;
         }
 
         private void buttonEditRestock_Click(object sender, EventArgs e)
         {
-            int value;
-            if (textBoxEditQuantity.Text == string.Empty)
-            {
-                MessageBox.Show("Введіть кількість для списання/поповнення", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (!ValidateInput(out int value))
                 return;
-            }
-            
-            value = int.Parse(textBoxEditQuantity.Text);
-            
-            if (value <= 0)
-            {
-                MessageBox.Show("Кількість не може бути меншою 0 або рівною 0", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
 
-            _database.EditQuantity(productId, value);
-            quantity += value;
+            _database.EditQuantity(_productId, value);
+            _currentQuantity += value;
 
             QuantityEdited?.Invoke(this, EventArgs.Empty);
+
+            MessageBox.Show($"Товар поповнено на {value} одиниць", "Успішно",
+                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            this.Close();
         }
 
         private void buttonEditWriteOff_Click(object sender, EventArgs e)
         {
-            int value;
-            if (textBoxEditQuantity.Text == string.Empty)
+            if (!ValidateInput(out int value))
+                return;
+
+            if (_currentQuantity - value < 0)
             {
-                MessageBox.Show("Введіть кількість для списання/поповнення", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Кількість товару після списання не може бути меншою за 0\nБудь ласка введіть коректне значення",
+                               "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
+            _database.EditQuantity(_productId, -value);
+            _currentQuantity -= value;
 
-            value = int.Parse(textBoxEditQuantity.Text);
+            QuantityEdited?.Invoke(this, EventArgs.Empty);
+
+            MessageBox.Show($"Списано {value} одиниць товару", "Успішно",
+                           MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            this.Close();
+        }
+
+        private bool ValidateInput(out int value)
+        {
+            value = 0;
+
+            if (string.IsNullOrWhiteSpace(textBoxEditQuantity.Text))
+            {
+                MessageBox.Show("Введіть кількість для списання/поповнення", "Інформація",
+                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+
+            if (!int.TryParse(textBoxEditQuantity.Text, out value))
+            {
+                MessageBox.Show("Введіть коректне числове значення", "Помилка",
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
 
             if (value <= 0)
             {
-                MessageBox.Show("Кількість не може бути меншою 0 або рівною 0", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-            if (quantity - value < 0)
-            {
-                MessageBox.Show("Кількість товару після списання не може бути меншою за 0 \nБудь ласка введіть коректне значення", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                MessageBox.Show("Кількість не може бути меншою 0 або рівною 0", "Інформація",
+                               MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
             }
 
-            _database.EditQuantity(productId, -value);
-            quantity -= value;
-
-            QuantityEdited?.Invoke(this, EventArgs.Empty);
+            return true;
         }
 
-
-
-        private void enableOnlyDigitInput(object sender, KeyPressEventArgs e)
+        private void EnableOnlyDigitInput(object sender, KeyPressEventArgs e)
         {
-            TextBox textBox = sender as TextBox;
-
-            if (!char.IsLetter(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            // Дозволяємо тільки цифри та клавішу Backspace
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
             {
                 e.Handled = true;
             }

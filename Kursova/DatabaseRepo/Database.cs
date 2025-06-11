@@ -1,5 +1,6 @@
 ﻿using Warehouse.Models;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace Warehouse.DatabaseRepo;
 
@@ -9,12 +10,20 @@ public class Database
     public BindingList<Product> WarehouseTableView { get; private set; }
     public int AutoIncrementId { get; set; }
 
+    public List<Product> _filteredData;
+    public bool _isFiltered = false;
+
+    // Додаємо події для повідомлення про зміни сортування
+    public event Action<string, SortOrder> SortChanged;
 
     public Database(int AutoIncrementId = 0)
     {
         this.AutoIncrementId = AutoIncrementId;
         WarehouseTableData = new List<Product>();
-        WarehouseTableView = new BindingList<Product>(WarehouseTableData);
+        WarehouseTableView = new BindingList<Product>();
+        _filteredData = new List<Product>();
+
+        RefreshView();
     }
 
     public void RestoreBindingList()
@@ -22,7 +31,7 @@ public class Database
         if (WarehouseTableData == null)
             WarehouseTableData = new List<Product>();
 
-        WarehouseTableView = new BindingList<Product>(WarehouseTableData);
+        RefreshView();
     }
 
     public int GetNextProductId()
@@ -44,82 +53,239 @@ public class Database
     public void AddProduct(Product product)
     {
         WarehouseTableData.Add(product);
-        WarehouseTableView = new BindingList<Product>(WarehouseTableData);
+
+        if (_isFiltered)
+        {
+            RefreshView();
+        }
+        else
+        {
+            WarehouseTableView.Add(product);
+        }
     }
 
     public void RemoveProduct(Product product)
     {
         WarehouseTableData.Remove(product);
-        WarehouseTableView = new BindingList<Product>(WarehouseTableData);
+
+        if (WarehouseTableView.Contains(product))
+        {
+            WarehouseTableView.Remove(product);
+        }
+
+        if (_isFiltered && _filteredData.Contains(product))
+        {
+            _filteredData.Remove(product);
+        }
     }
 
     public void EditProduct(int id, string name, string measureUnit, int pricePerUnit)
     {
         int productIndex = GetProductIndexById(id);
 
-        WarehouseTableData[productIndex].Name = name;
-        WarehouseTableData[productIndex].MeasureUnit = measureUnit;
-        WarehouseTableData[productIndex].PricePerUnit = pricePerUnit;
-        WarehouseTableData[productIndex].TotalPrice = WarehouseTableData[productIndex].Quantity * pricePerUnit;
+        if (!IsValidIndex(productIndex)) return;
 
-        WarehouseTableView = new BindingList<Product>(WarehouseTableData);
+        var product = this[productIndex];
+        product.Name = name;
+        product.MeasureUnit = measureUnit;
+        product.PricePerUnit = pricePerUnit;
+
+        NotifyItemChanged(product);
     }
 
     public void EditQuantity(int id, int quantity)
     {
         int productIndex = GetProductIndexById(id);
 
-        int temp = WarehouseTableData[productIndex].Quantity;
-        WarehouseTableData[productIndex].Quantity = temp + quantity;
+        if (!IsValidIndex(productIndex)) return;
 
-        WarehouseTableView = new BindingList<Product>(WarehouseTableData);
+        var product = this[productIndex];
+        product.Quantity += quantity;
+        product.LastDeliveryDate = DateTime.Now;
+
+        NotifyItemChanged(product);
+    }
+
+    private void NotifyItemChanged(Product product)
+    {
+        var indexInView = WarehouseTableView.IndexOf(product);
+        if (indexInView >= 0)
+        {
+            WarehouseTableView.ResetItem(indexInView);
+        }
+    }
+
+    public void ApplyFilter(DateTime? dateFrom, DateTime? dateTo, string measureUnit,
+                       string quantityOperator, int? quantityValue,
+                       string priceOperator, double? priceValue,
+                       string totalPriceOperator, double? totalPriceValue)
+    {
+        _filteredData = WarehouseTableData.Where(product =>
+        {
+            if (dateFrom.HasValue && product.FirstAddedDate < dateFrom.Value)
+                return false;
+
+            if (dateTo.HasValue && product.FirstAddedDate > dateTo.Value)
+                return false;
+
+            if (!string.IsNullOrEmpty(measureUnit) &&
+                !product.MeasureUnit.Contains(measureUnit, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            if (quantityValue.HasValue && !string.IsNullOrEmpty(quantityOperator))
+            {
+                if (quantityOperator == ">" && product.Quantity <= quantityValue.Value)
+                    return false;
+                if (quantityOperator == "<" && product.Quantity >= quantityValue.Value)
+                    return false;
+                if (quantityOperator == "=" && product.Quantity != quantityValue.Value)
+                    return false;
+            }
+
+            if (priceValue.HasValue && !string.IsNullOrEmpty(priceOperator))
+            {
+                if (priceOperator == ">" && product.PricePerUnit <= priceValue.Value)
+                    return false;
+                if (priceOperator == "<" && product.PricePerUnit >= priceValue.Value)
+                    return false;
+                if (priceOperator == "=" && Math.Abs(product.PricePerUnit - priceValue.Value) > 0)
+                    return false;
+            }
+
+            if (totalPriceValue.HasValue && !string.IsNullOrEmpty(totalPriceOperator))
+            {
+                if (totalPriceOperator == ">" && product.TotalPrice <= totalPriceValue.Value)
+                    return false;
+                if (totalPriceOperator == "<" && product.TotalPrice >= totalPriceValue.Value)
+                    return false;
+                if (totalPriceOperator == "=" && Math.Abs(product.TotalPrice - totalPriceValue.Value) > 0)
+                    return false;
+            }
+
+            return true;
+        }).ToList();
+
+        _isFiltered = true;
+        RefreshView();
+    }
+
+    public void ClearFilter()
+    {
+        _isFiltered = false;
+        _filteredData.Clear();
+        RefreshView();
+    }
+
+    public void RefreshView()
+    {
+        var dataToShow = _isFiltered ? _filteredData : WarehouseTableData;
+
+        // RaiseListChangedEvents для більш плавного оновлення
+        WarehouseTableView.RaiseListChangedEvents = false;
+        WarehouseTableView.Clear();
+        foreach (var product in dataToShow)
+        {
+            WarehouseTableView.Add(product);
+        }
+        WarehouseTableView.RaiseListChangedEvents = true;
+        WarehouseTableView.ResetBindings();
     }
 
     public void SortByParametr(string parametr, SortOrder sortOrder = SortOrder.Ascending)
     {
+        var dataToSort = _isFiltered ? _filteredData : WarehouseTableData;
         List<Product> sortedList;
 
         switch (parametr)
         {
             case "Id":
                 sortedList = sortOrder == SortOrder.Ascending
-                    ? WarehouseTableView.OrderBy(p => p.Id).ToList()
-                    : WarehouseTableView.OrderByDescending(p => p.Id).ToList();
+                    ? dataToSort.OrderBy(p => p.Id).ToList()
+                    : dataToSort.OrderByDescending(p => p.Id).ToList();
                 break;
             case "ProductName":
                 sortedList = sortOrder == SortOrder.Ascending
-                    ? WarehouseTableView.OrderBy(p => p.Name).ToList()
-                    : WarehouseTableView.OrderByDescending(p => p.Name).ToList();
+                    ? dataToSort.OrderBy(p => p.Name).ToList()
+                    : dataToSort.OrderByDescending(p => p.Name).ToList();
                 break;
-            case "MeasureUnit": 
+            case "MeasureUnit":
                 sortedList = sortOrder == SortOrder.Ascending
-                    ? WarehouseTableView.OrderBy(p => p.MeasureUnit).ToList()
-                    : WarehouseTableView.OrderByDescending(p => p.MeasureUnit).ToList();
+                    ? dataToSort.OrderBy(p => p.MeasureUnit).ToList()
+                    : dataToSort.OrderByDescending(p => p.MeasureUnit).ToList();
                 break;
             case "PricePerUnit":
                 sortedList = sortOrder == SortOrder.Ascending
-                    ? WarehouseTableView.OrderBy(p => p.PricePerUnit).ToList()
-                    : WarehouseTableView.OrderByDescending(p => p.PricePerUnit).ToList();
+                    ? dataToSort.OrderBy(p => p.PricePerUnit).ToList()
+                    : dataToSort.OrderByDescending(p => p.PricePerUnit).ToList();
                 break;
             case "Quantity":
                 sortedList = sortOrder == SortOrder.Ascending
-                    ? WarehouseTableView.OrderBy(p => p.Quantity).ToList()
-                    : WarehouseTableView.OrderByDescending(p => p.Quantity).ToList();
+                    ? dataToSort.OrderBy(p => p.Quantity).ToList()
+                    : dataToSort.OrderByDescending(p => p.Quantity).ToList();
                 break;
             case "LastDeliveryDate":
                 sortedList = sortOrder == SortOrder.Ascending
-                    ? WarehouseTableView.OrderBy(p => p.LastDeliveryDate).ToList()
-                    : WarehouseTableView.OrderByDescending(p => p.LastDeliveryDate).ToList();
+                    ? dataToSort.OrderBy(p => p.LastDeliveryDate).ToList()
+                    : dataToSort.OrderByDescending(p => p.LastDeliveryDate).ToList();
+                break;
+            case "FirstAddedDate":
+                sortedList = sortOrder == SortOrder.Ascending
+                    ? dataToSort.OrderBy(p => p.FirstAddedDate).ToList()
+                    : dataToSort.OrderByDescending(p => p.FirstAddedDate).ToList();
                 break;
             case "TotalPrice":
                 sortedList = sortOrder == SortOrder.Ascending
-                    ? WarehouseTableView.OrderBy(p => p.TotalPrice).ToList()
-                    : WarehouseTableView.OrderByDescending(p => p.TotalPrice).ToList();
+                    ? dataToSort.OrderBy(p => p.TotalPrice).ToList()
+                    : dataToSort.OrderByDescending(p => p.TotalPrice).ToList();
                 break;
             default:
                 return;
         }
 
-        WarehouseTableView = new BindingList<Product>(sortedList);
+        // Оновлюємо відповідний список
+        if (_isFiltered)
+        {
+            _filteredData = sortedList;
+        }
+        else
+        {
+            WarehouseTableData = sortedList;
+        }
+
+        // Використовуємо більш м'яке оновлення замість RefreshView()
+        //WarehouseTableView.RaiseListChangedEvents = false;
+        WarehouseTableView.Clear();
+        foreach (var product in sortedList)
+        {
+            WarehouseTableView.Add(product);
+        }
+        //WarehouseTableView.RaiseListChangedEvents = true;
+        WarehouseTableView.ResetBindings();
+
+
+        RefreshView();
+
+        // Повідомляємо про зміну сортування
+        SortChanged?.Invoke(parametr, sortOrder);
+    }
+
+    public void SearchByName(string name)
+    {
+        name = name.Trim().ToLower();
+
+        if (string.IsNullOrEmpty(name))
+        {
+            ClearFilter();
+            return;
+        }
+
+        _filteredData = WarehouseTableData.Where(p => p.Name.ToLower().Contains(name)).ToList();
+        _isFiltered = true;
+        RefreshView();
+    }
+
+    public Product this[int index]
+    {
+        get { return WarehouseTableData[index]; }
     }
 }

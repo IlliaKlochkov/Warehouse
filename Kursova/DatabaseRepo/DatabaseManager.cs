@@ -1,6 +1,5 @@
 ﻿using System.Text.Encodings.Web;
 using System.Text.Json;
-
 namespace Warehouse.DatabaseRepo;
 
 class DatabaseManager

@@ -3,12 +3,13 @@ using System.Windows.Forms;
 using Warehouse.DatabaseRepo;
 using Warehouse.Models;
 
-
 namespace Warehouse.UI;
 
 public partial class Workspace : Form
 {
+    private DatabaseManager _databaseManager = new DatabaseManager();
     private Database _database;
+
     private string _lastSortedColumn = "";
     private SortOrder _lastSortOrder = SortOrder.None;
 
@@ -18,31 +19,49 @@ public partial class Workspace : Form
 
         _database = database;
 
-        dataGridView_products.AutoGenerateColumns = false;
-        updateDataGridView();
+        _database.SortChanged += OnSortChanged;
 
+        dataGridView_products.AutoGenerateColumns = false;
+        dataGridView_products.DataSource = _database.WarehouseTableView;
     }
 
-    public void updateDataGridView()
+    private void OnSortChanged(string columnName, SortOrder sortOrder)
     {
-        var currentSortColumn = _lastSortedColumn;
-        var currentSortOrder = _lastSortOrder;
+        _lastSortedColumn = columnName;
+        _lastSortOrder = sortOrder;
 
-        dataGridView_products.DataSource = null;
-        dataGridView_products.DataSource = _database.WarehouseTableView;
+        UpdateSortGlyphs();
+    }
 
-        // Відновлює іконку сортування
-        if (!string.IsNullOrEmpty(currentSortColumn) && currentSortOrder != SortOrder.None)
+    private void UpdateSortGlyphs()
+    {
+        foreach (DataGridViewColumn column in dataGridView_products.Columns)
+        {
+            column.HeaderCell.SortGlyphDirection = SortOrder.None;
+        }
+
+
+        if (!string.IsNullOrEmpty(_lastSortedColumn) && _lastSortOrder != SortOrder.None)
         {
             foreach (DataGridViewColumn column in dataGridView_products.Columns)
             {
-                if (column.Name == currentSortColumn)
+                if (column.Name == _lastSortedColumn)
                 {
-                    column.HeaderCell.SortGlyphDirection = currentSortOrder;
+                    column.HeaderCell.SortGlyphDirection = _lastSortOrder;
                     break;
                 }
             }
         }
+    }
+
+    public void UpdateDataGridView()
+    {
+        if (dataGridView_products.DataSource != _database.WarehouseTableView)
+        {
+            dataGridView_products.DataSource = _database.WarehouseTableView;
+        }
+
+        UpdateSortGlyphs();
     }
 
     private void dataGridView1_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -59,6 +78,7 @@ public partial class Workspace : Form
             _lastSortedColumn = sortParametr;
         }
 
+
         foreach (DataGridViewColumn column in dataGridView_products.Columns)
         {
             column.HeaderCell.SortGlyphDirection = SortOrder.None;
@@ -67,10 +87,17 @@ public partial class Workspace : Form
         dataGridView_products.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection = _lastSortOrder;
 
         _database.SortByParametr(sortParametr, _lastSortOrder);
-
-        updateDataGridView();
     }
 
+    private void ValidateRowSelection()
+    {
+        if (dataGridView_products.SelectedRows.Count <= 0)
+        {
+            MessageBox.Show("Виберіть рядок для редагування", "Попередження",
+                           MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            throw new InvalidOperationException("Не вибрано рядок");
+        }
+    }
 
     private void DeleteProductWithConfirmation()
     {
@@ -92,44 +119,8 @@ public partial class Workspace : Form
             var selectedRow = dataGridView_products.SelectedRows[0];
             var selectedProduct = (Product)selectedRow.DataBoundItem;
             _database.RemoveProduct(selectedProduct);
-            updateDataGridView();
+
         }
-    }
-
-
-
-    //  Кнопки з меню
-    private void toolStripMenuItem_addProduct_Click(object sender, EventArgs e)
-    {
-        AddProduct addProductForm = new AddProduct(_database);
-        addProductForm.ProductAdded += (s, args) =>
-        {
-            updateDataGridView();
-        };
-        addProductForm.Show();
-    }
-
-
-    private void ToolStripMenuItem_removeProduct_Click(object sender, EventArgs e)
-    {
-        DeleteProductWithConfirmation();
-    }
-
-
-    private void пршукToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-
-    }
-
-    private void ToolStripMenuItem_editProduct_Click(object sender, EventArgs e)
-    {
-        DataGridViewRow selectedRow = dataGridView_products.SelectedRows[0];
-        EditProduct addProductForm = new EditProduct(_database, selectedRow);
-        addProductForm.ProductEdited += (s, args) =>
-        {
-            updateDataGridView();
-        };
-        addProductForm.Show();
     }
 
     private void dataGridView_products_KeyDown(object sender, KeyEventArgs e)
@@ -140,14 +131,140 @@ public partial class Workspace : Form
         }
     }
 
+    // Кнопки з меню
+    private void toolStripMenuItem_addProduct_Click(object sender, EventArgs e)
+    {
+        AddProduct addProductForm = new AddProduct(_database);
+        addProductForm.Show();
+    }
+
+    private void ToolStripMenuItem_removeProduct_Click(object sender, EventArgs e)
+    {
+        DeleteProductWithConfirmation();
+    }
+
+    private void ToolStripMenuItem_editProduct_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            ValidateRowSelection();
+            DataGridViewRow selectedRow = dataGridView_products.SelectedRows[0];
+            EditProduct editProductForm = new EditProduct(_database, selectedRow);
+
+            editProductForm.Show();
+        }
+        catch (InvalidOperationException)
+        {
+
+        }
+    }
+
     private void ToolStripMenuItem_editQuantity_Click(object sender, EventArgs e)
     {
-        DataGridViewRow selectedRow = dataGridView_products.SelectedRows[0];
-        EditingQuantity addProductForm = new EditingQuantity(_database, selectedRow);
-        addProductForm.QuantityEdited += (s, args) =>
+        try
         {
-            updateDataGridView();
+            ValidateRowSelection();
+            DataGridViewRow selectedRow = dataGridView_products.SelectedRows[0];
+            EditingQuantity editQuantityForm = new EditingQuantity(_database, selectedRow);
+            editQuantityForm.Show();
+        }
+        catch (InvalidOperationException)
+        {
+
+        }
+    }
+
+    private void ToolStripMenuItem_FilterProduct_Click(object sender, EventArgs e)
+    {
+        FilterProduct filterForm = new FilterProduct(_database);
+        filterForm.Show();
+    }
+
+    private void ToolStripMenuItem_SearchByName_Click(object sender, EventArgs e)
+    {
+        string searchPrompt = toolStripTextBox_SearchByName.Text;
+        _database.SearchByName(searchPrompt);
+    }
+
+    private void openToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        using var file = new OpenFileDialog
+        {
+            Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*"
         };
-        addProductForm.Show();
+
+        if (file.ShowDialog() == DialogResult.OK)
+        {
+            string filepath = file.FileName;
+            var database = _databaseManager.LoadDataFromFile(filepath);
+
+            if (database == null)
+            {
+                MessageBox.Show($"Виникла помилка при загрузці проекту \n {_database}", "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Відписуємося від попередньої бази даних
+            _database.SortChanged -= OnSortChanged;
+
+            _database = database;
+
+            // Підписуємося на нову базу даних
+            _database.SortChanged += OnSortChanged;
+
+            // Скидаємо інформацію про сортування
+            _lastSortedColumn = "";
+            _lastSortOrder = SortOrder.None;
+
+            UpdateDataGridView();
+        }
+    }
+
+    private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void newToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+        // Відписуємося від попередньої бази даних
+        _database.SortChanged -= OnSortChanged;
+
+        _database = new Database();
+
+        // Підписуємося на нову базу даних
+        _database.SortChanged += OnSortChanged;
+
+        // Скидаємо інформацію про сортування
+        _lastSortedColumn = "";
+        _lastSortOrder = SortOrder.None;
+
+        UpdateDataGridView();
+    }
+
+    private void toolStripTextBox_SearchByName_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter)
+        {
+            string searchPrompt = toolStripTextBox_SearchByName.Text;
+            _database.SearchByName(searchPrompt);
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+    }
+
+    protected override void OnFormClosed(FormClosedEventArgs e)
+    {
+        // Відписуємося від подій при закритті форми
+        if (_database != null)
+        {
+            _database.SortChanged -= OnSortChanged;
+        }
+        base.OnFormClosed(e);
+    }
+
+    private void toolStripMenuItem3_Click(object sender, EventArgs e)
+    {
+
     }
 }

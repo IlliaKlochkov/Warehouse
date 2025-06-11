@@ -7,10 +7,11 @@ public class Product
     public string MeasureUnit { get; set; }
     public double PricePerUnit { get; set; }
     public int Quantity { get; set; }
+    public DateTime FirstAddedDate { get; set; }
     public DateTime LastDeliveryDate { get; set; }
     public double TotalPrice { get; set; }
 
-    public Product(int Id, string Name, string MeasureUnit, double PricePerUnit, int Quantity, DateTime LastDeliveryDate)
+    public Product(int Id, string Name, string MeasureUnit, double PricePerUnit, int Quantity, DateTime FirstAddedDate, DateTime LastDeliveryDate, double TotalPrice = -1)
     {
         this.Id = Id;
         this.Name = Name;
@@ -18,7 +19,11 @@ public class Product
         this.PricePerUnit = PricePerUnit;
         this.Quantity = Quantity;
         this.LastDeliveryDate = LastDeliveryDate;
-        this.TotalPrice = Quantity * PricePerUnit;
+        this.FirstAddedDate = FirstAddedDate;
+        if (TotalPrice == -1)
+            this.TotalPrice = Quantity * PricePerUnit;
+        else
+            this.TotalPrice = TotalPrice;
     }
 
 
