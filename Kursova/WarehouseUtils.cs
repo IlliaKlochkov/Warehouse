@@ -19,6 +19,17 @@ public class WarehouseUtils
         comboBox.ValueMember = "Key";
     }
 
+    public static void GenerateOperationComboBox(Product product, ComboBox comboBox)
+    {
+        var items = product.Operations
+            .Select(pair => new KeyValuePair<DateTime, string>(pair.Key.Date, pair.Key.ToString("dd.MM.yyyy")))
+            .ToList();
+
+        comboBox.DisplayMember = "Value";
+        comboBox.ValueMember = "Key";
+        comboBox.DataSource = items;
+    }
+
     public static void ValidateRowSelection(DataGridView dataGridView)
     {
         if (dataGridView.SelectedRows.Count <= 0)

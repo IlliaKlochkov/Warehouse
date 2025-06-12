@@ -83,9 +83,9 @@
             label1.Font = new Font("Segoe UI", 12F);
             label1.Location = new Point(12, 9);
             label1.Name = "label1";
-            label1.Size = new Size(217, 28);
+            label1.Size = new Size(195, 28);
             label1.TabIndex = 18;
-            label1.Text = "Редагування продукту";
+            label1.Text = "Редагування товару";
             // 
             // textBoxEditPricePerUnit
             // 
@@ -144,7 +144,7 @@
             Controls.Add(textBoxEditName);
             Name = "EditProduct";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "EditProdict";
+            Text = "Редагування товару";
             ResumeLayout(false);
             PerformLayout();
         }

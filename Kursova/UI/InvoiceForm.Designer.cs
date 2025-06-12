@@ -146,6 +146,7 @@
             // ToolStripMenuItem_AddProduct
             // 
             ToolStripMenuItem_AddProduct.AutoSize = false;
+            ToolStripMenuItem_AddProduct.Image = Properties.Resources.plus_80;
             ToolStripMenuItem_AddProduct.Name = "ToolStripMenuItem_AddProduct";
             ToolStripMenuItem_AddProduct.Size = new Size(143, 45);
             ToolStripMenuItem_AddProduct.Text = "Додати";
@@ -154,6 +155,7 @@
             // редагуватиToolStripMenuItem
             // 
             редагуватиToolStripMenuItem.AutoSize = false;
+            редагуватиToolStripMenuItem.Image = Properties.Resources.edit_80;
             редагуватиToolStripMenuItem.Name = "редагуватиToolStripMenuItem";
             редагуватиToolStripMenuItem.Size = new Size(143, 45);
             редагуватиToolStripMenuItem.Text = "Редагувати";
@@ -162,6 +164,7 @@
             // видалитиToolStripMenuItem
             // 
             видалитиToolStripMenuItem.AutoSize = false;
+            видалитиToolStripMenuItem.Image = Properties.Resources.delete_80;
             видалитиToolStripMenuItem.Name = "видалитиToolStripMenuItem";
             видалитиToolStripMenuItem.Size = new Size(143, 45);
             видалитиToolStripMenuItem.Text = "Видалити";
@@ -170,6 +173,7 @@
             // ToolStripMenuItem_Print
             // 
             ToolStripMenuItem_Print.AutoSize = false;
+            ToolStripMenuItem_Print.Image = Properties.Resources.print_80;
             ToolStripMenuItem_Print.Name = "ToolStripMenuItem_Print";
             ToolStripMenuItem_Print.Size = new Size(143, 45);
             ToolStripMenuItem_Print.Text = "Друк";
@@ -178,6 +182,7 @@
             // ToolStripMenuItem_ApllyChanges
             // 
             ToolStripMenuItem_ApllyChanges.AutoSize = false;
+            ToolStripMenuItem_ApllyChanges.Image = Properties.Resources.confirm_80;
             ToolStripMenuItem_ApllyChanges.Name = "ToolStripMenuItem_ApllyChanges";
             ToolStripMenuItem_ApllyChanges.Size = new Size(143, 45);
             ToolStripMenuItem_ApllyChanges.Text = "Застосувати";
@@ -279,7 +284,7 @@
             MainMenuStrip = menuStrip1;
             Name = "InvoiceForm";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Прибуткова накладна";
+            Text = "Формування накладної";
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
             menuStrip1.ResumeLayout(false);

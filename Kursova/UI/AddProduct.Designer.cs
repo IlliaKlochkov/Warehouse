@@ -84,9 +84,9 @@
             label1.Font = new Font("Segoe UI", 12F);
             label1.Location = new Point(12, 9);
             label1.Name = "label1";
-            label1.Size = new Size(330, 28);
+            label1.Size = new Size(308, 28);
             label1.TabIndex = 6;
-            label1.Text = "Додавання продукту до накладної";
+            label1.Text = "Додавання товару до накладної";
             // 
             // label2
             // 
@@ -140,9 +140,9 @@
             checkBox_NewProduct.Font = new Font("Segoe UI", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 204);
             checkBox_NewProduct.Location = new Point(12, 56);
             checkBox_NewProduct.Name = "checkBox_NewProduct";
-            checkBox_NewProduct.Size = new Size(160, 29);
+            checkBox_NewProduct.Size = new Size(141, 29);
             checkBox_NewProduct.TabIndex = 13;
-            checkBox_NewProduct.Text = "Новий продукт";
+            checkBox_NewProduct.Text = "Новий товар";
             checkBox_NewProduct.UseVisualStyleBackColor = true;
             checkBox_NewProduct.CheckedChanged += checkBox1_CheckedChanged;
             // 
@@ -151,9 +151,9 @@
             label6.AutoSize = true;
             label6.Location = new Point(10, 101);
             label6.Name = "label6";
-            label6.Size = new Size(90, 20);
+            label6.Size = new Size(75, 20);
             label6.TabIndex = 15;
-            label6.Text = "ID продукту";
+            label6.Text = "ID товару";
             // 
             // label7
             // 
@@ -193,7 +193,7 @@
             Controls.Add(textBox_Name);
             Name = "AddProduct";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "AddProduct";
+            Text = "Додавання товару";
             ResumeLayout(false);
             PerformLayout();
         }

@@ -4,7 +4,6 @@ namespace Warehouse.UI;
 
 public partial class Workspace : Form
 {
-    private DatabaseManager _databaseManager = new DatabaseManager();
     private Database _database;
 
     private string _lastSortedColumn = "";
@@ -101,11 +100,13 @@ public partial class Workspace : Form
         string searchPrompt = toolStripTextBox_SearchByName.Text;
         _database.SearchByName(searchPrompt);
     }
+    
     private void ToolStripMenuItem_FilterProduct_Click(object sender, EventArgs e)
     {
         FilterProduct filterForm = new FilterProduct(_database);
         filterForm.Show();
     }
+    
     private void ToolStripMenuItem_Invoice_Click(object sender, EventArgs e)
     {
         InvoiceForm invoiceForm = new InvoiceForm(_database);
@@ -133,6 +134,15 @@ public partial class Workspace : Form
     private void ToolStripMenuItem_removeProduct_Click(object sender, EventArgs e)
     {
         WarehouseUtils.DeleteProductWithConfirmation(dataGridView_products, _database);
+    }
+
+    private void ToolStripMenuItem_Details_Click(object sender, EventArgs e)
+    {
+        WarehouseUtils.ValidateRowSelection(dataGridView_products);
+        DataGridViewRow selectedRow = dataGridView_products.SelectedRows[0];
+        DetailsForm detailsForm = new DetailsForm(selectedRow, _database);
+
+        detailsForm.Show();
     }
 
 
@@ -209,4 +219,6 @@ public partial class Workspace : Form
         }
         base.OnFormClosed(e);
     }
+
+
 }

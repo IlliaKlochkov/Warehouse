@@ -1,4 +1,5 @@
-﻿using Warehouse.DatabaseRepo;
+﻿using System.Reflection.Emit;
+using Warehouse.DatabaseRepo;
 using Warehouse.Models;
 
 namespace Warehouse.UI;
@@ -136,10 +137,16 @@ public partial class InvoiceForm : Form
             if (existingProduct == null)
             {
                 _warehouseDatabase.AddProduct(InvoiceProduct);
+                int productId = _warehouseDatabase.GetProductIndexById(InvoiceProduct.Id);
+                Product product = _warehouseDatabase[productId];
+
+
+                OperationType operationType = OperationType.Added;
+                Operation operation = new Operation(operationType, dateTimePicker.Value, _warehouseDatabase[productId].Name, InvoiceProduct.Quantity);
+                _warehouseDatabase[productId].AddOperation(dateTimePicker.Value, operation);
             }
             else
             {
-                // Продукт з таким ID існує - оновлюємо кількість
                 int quantityToChange = checkBox_Inbound.Checked == true ? InvoiceProduct.Quantity : InvoiceProduct.Quantity * -1;
                 int productIndex = _warehouseDatabase.GetProductIndexById(InvoiceProduct.Id);
 
@@ -148,7 +155,11 @@ public partial class InvoiceForm : Form
                 _warehouseDatabase[productIndex].Quantity += quantityToChange;
                 _warehouseDatabase[productIndex].UpdateTotalPrice();
 
-                int resultQuantity = _warehouseDatabase[productIndex].Quantity;
+                // Додавання операції до історії
+                OperationType operationType = checkBox_Inbound.Checked ? OperationType.Inbound : OperationType.Outbound;
+                Operation operation = new Operation(operationType, dateTimePicker.Value, _warehouseDatabase[productIndex].Name, InvoiceProduct.Quantity);
+                _warehouseDatabase[productIndex].AddOperation(dateTimePicker.Value, operation);
+
 
                 if (checkBox_Inbound.Checked == true & _warehouseDatabase[productIndex].LastDeliveryDate < dateTimePicker.Value)
                 {

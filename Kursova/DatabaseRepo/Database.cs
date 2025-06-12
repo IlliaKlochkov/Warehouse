@@ -13,6 +13,7 @@ public class Database
 
     public List<Product> _filteredData;
     public bool _isFiltered = false;
+    public bool _isOnlyAvailable = false;
 
     // Додаємо події для повідомлення про зміни сортування
     public event Action<string, SortOrder> SortChanged;
@@ -137,22 +138,20 @@ public class Database
     }
 
     public void ApplyFilter(DateTime? dateFrom, DateTime? dateTo, string measureUnit,
-                       string quantityOperator, int? quantityValue,
-                       string priceOperator, double? priceValue,
-                       string totalPriceOperator, double? totalPriceValue)
+                           string quantityOperator, int? quantityValue,
+                           string priceOperator, double? priceValue,
+                           string totalPriceOperator, double? totalPriceValue,
+                           bool onlyAvailable)
     {
         _filteredData = WarehouseTableData.Where(product =>
         {
             if (dateFrom.HasValue && product.FirstAddedDate < dateFrom.Value)
                 return false;
-
             if (dateTo.HasValue && product.FirstAddedDate > dateTo.Value)
                 return false;
-
             if (!string.IsNullOrEmpty(measureUnit) &&
                 !product.MeasureUnit.Contains(measureUnit, StringComparison.OrdinalIgnoreCase))
                 return false;
-
             if (quantityValue.HasValue && !string.IsNullOrEmpty(quantityOperator))
             {
                 if (quantityOperator == ">" && product.Quantity <= quantityValue.Value)
@@ -162,7 +161,6 @@ public class Database
                 if (quantityOperator == "=" && product.Quantity != quantityValue.Value)
                     return false;
             }
-
             if (priceValue.HasValue && !string.IsNullOrEmpty(priceOperator))
             {
                 if (priceOperator == ">" && product.PricePerUnit <= priceValue.Value)
@@ -172,7 +170,6 @@ public class Database
                 if (priceOperator == "=" && Math.Abs(product.PricePerUnit - priceValue.Value) > 0)
                     return false;
             }
-
             if (totalPriceValue.HasValue && !string.IsNullOrEmpty(totalPriceOperator))
             {
                 if (totalPriceOperator == ">" && product.TotalPrice <= totalPriceValue.Value)
@@ -182,17 +179,21 @@ public class Database
                 if (totalPriceOperator == "=" && Math.Abs(product.TotalPrice - totalPriceValue.Value) > 0)
                     return false;
             }
+            if (onlyAvailable && product.Quantity <= 0)
+                return false;
 
             return true;
         }).ToList();
 
         _isFiltered = true;
+        _isOnlyAvailable = onlyAvailable;
         RefreshView();
     }
 
     public void ClearFilter()
     {
         _isFiltered = false;
+        _isOnlyAvailable = false;
         _filteredData.Clear();
         RefreshView();
     }

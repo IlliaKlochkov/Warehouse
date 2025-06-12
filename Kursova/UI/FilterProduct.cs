@@ -7,6 +7,7 @@ namespace Warehouse.UI
         private Database _database;
         public event EventHandler FilterApplied;
 
+
         public FilterProduct(Database database)
         {
             InitializeComponent();
@@ -24,6 +25,8 @@ namespace Warehouse.UI
             comboBox1.SelectedIndex = 0;
             comboBox2.SelectedIndex = 0;
             comboBox3.SelectedIndex = 0;
+
+            checkBox_OnlyAvailable.Checked = _database._isOnlyAvailable;
         }
 
         private void buttonApplyFilterProduct_Click(object sender, EventArgs e)
@@ -32,40 +35,36 @@ namespace Warehouse.UI
             {
                 DateTime? dateFrom = dateTimePicker1.Checked ? dateTimePicker1.Value.Date : null;
                 DateTime? dateTo = dateTimePicker2.Checked ? dateTimePicker2.Value.Date.AddDays(1).AddSeconds(-1) : null;
-
                 string measureUnit = textBoxFilterMeasureUnit.Text.Trim();
-
                 string quantityOperator = comboBox1.SelectedItem?.ToString();
                 int? quantityValue = GetIntegerValue(textBoxFilterQuantity.Text);
-
                 string priceOperator = comboBox2.SelectedItem?.ToString();
                 double? priceValue = GetDoubleValue(textBoxFilterPricePerUnit.Text);
-
                 string totalPriceOperator = comboBox3.SelectedItem?.ToString();
                 double? totalPriceValue = GetDoubleValue(textBoxFilterTotalPrice.Text);
+                bool onlyAvailable = checkBox_OnlyAvailable.Checked;
 
-                _database.ApplyFilter(dateFrom, dateTo, measureUnit,
-                                    quantityOperator, quantityValue,
-                                    priceOperator, priceValue,
-                                    totalPriceOperator, totalPriceValue);
+                _database.ApplyFilter(dateFrom, dateTo, measureUnit, quantityOperator, quantityValue,
+                                   priceOperator, priceValue, totalPriceOperator, totalPriceValue, onlyAvailable);
 
                 FilterApplied?.Invoke(this, EventArgs.Empty);
             }
             catch (FormatException)
             {
-                MessageBox.Show("Перевірте правильність введених числових значень",
-                               "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Перевірте правильність введених числових значень", "Помилка",
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Виникла помилка при застосуванні фільтра: {ex.Message}",
-                               "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Виникла помилка при застосуванні фільтра: {ex.Message}", "Помилка",
+                               MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void buttonResetFilterProduct_Click(object sender, EventArgs e)
         {
             _database.ClearFilter();
+            checkBox_OnlyAvailable.Checked = _database._isOnlyAvailable;
             FilterApplied?.Invoke(this, EventArgs.Empty);
 
             MessageBox.Show("Фільтр скинуто!", "Інформація",
