@@ -1,4 +1,6 @@
-﻿using Warehouse.DatabaseRepo;
+﻿using System.Drawing.Printing;
+using System.Windows.Forms;
+using Warehouse.DatabaseRepo;
 
 namespace Warehouse.UI;
 
@@ -100,13 +102,13 @@ public partial class Workspace : Form
         string searchPrompt = toolStripTextBox_SearchByName.Text;
         _database.SearchByName(searchPrompt);
     }
-    
+
     private void ToolStripMenuItem_FilterProduct_Click(object sender, EventArgs e)
     {
         FilterProduct filterForm = new FilterProduct(_database);
         filterForm.Show();
     }
-    
+
     private void ToolStripMenuItem_Invoice_Click(object sender, EventArgs e)
     {
         InvoiceForm invoiceForm = new InvoiceForm(_database);
@@ -143,6 +145,29 @@ public partial class Workspace : Form
         DetailsForm detailsForm = new DetailsForm(selectedRow, _database);
 
         detailsForm.Show();
+    }
+    private void ToolStripMenuItem_Print_Click(object sender, EventArgs e)
+    {
+        PrintDocument printDoc = new PrintDocument();
+        printDoc.PrintPage += (s, ev) =>
+        {
+            using Font font = new Font("Times New Roman", 14);
+            ev.Graphics.DrawString(
+                WarehouseUtils.WarehouseProductsToString(_database), 
+                font,
+                Brushes.Black,
+                new RectangleF(50, 50, ev.PageBounds.Width - 100, ev.PageBounds.Height - 100)
+                );
+        };
+
+        using PrintDialog printDialog = new PrintDialog
+        {
+            Document = printDoc
+        };
+        if (printDialog.ShowDialog() == DialogResult.OK)
+        {
+            printDoc.Print();
+        }
     }
 
 

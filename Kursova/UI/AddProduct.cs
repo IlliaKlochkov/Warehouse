@@ -1,4 +1,5 @@
-﻿using Warehouse.DatabaseRepo;
+﻿using System.Globalization;
+using Warehouse.DatabaseRepo;
 using Warehouse.Models;
 
 namespace Warehouse.UI;
@@ -74,17 +75,23 @@ public partial class AddProduct : Form
         }
 
         int quantity = int.Parse(rawQuaintity);
-        int pricePerUnit = 1;
+        double pricePerUnit = 0;
 
         if (isNewProduct)
         {
-            pricePerUnit = int.Parse(textBox_PricePerUnit.Text);
+            pricePerUnit = double.Parse(textBox_PricePerUnit.Text);
         }
 
 
-        if (quantity <= 0 || pricePerUnit <= 0)
+        if (quantity <= 0)
         {
-            MessageBox.Show("Кількість та ціна не можуть бути менші за 0", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Кількість не може бути менша за 0", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return false;
+        }
+
+        if (pricePerUnit <= 0 && isNewProduct)
+        {
+            MessageBox.Show("Ціна не може бути менше за 0", "Інформація", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return false;
         }
 
@@ -150,7 +157,7 @@ public partial class AddProduct : Form
         }
 
         int quantity = int.Parse(textBox_Quantity.Text);
-        int pricePerUnit = int.Parse(textBox_PricePerUnit.Text);
+        double pricePerUnit = double.Parse(textBox_PricePerUnit.Text);
 
         int id = _invoiceDatabase.GetNextProductId();
 
@@ -173,17 +180,16 @@ public partial class AddProduct : Form
 
     private void enableOnlyLetterInput(object sender, KeyPressEventArgs e)
     {
-        if (!char.IsLetter(e.KeyChar) && e.KeyChar != (char)Keys.Back)
-        {
-            e.Handled = true;
-        }
+        WarehouseUtils.enableOnlyLetterInput(sender, e);
     }
 
     private void enableOnlyDigitInput(object sender, KeyPressEventArgs e)
     {
-        if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
-        {
-            e.Handled = true;
-        }
+        WarehouseUtils.enableOnlyDigitInput(sender, e);
+    }
+
+    private void enableOnlyDoubleInput(object sender, KeyPressEventArgs e)
+    {
+        WarehouseUtils.enableOnlyDoubleInput(sender, e, textBox_PricePerUnit);
     }
 }

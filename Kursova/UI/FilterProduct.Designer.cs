@@ -124,6 +124,7 @@
             textBoxFilterQuantity.Name = "textBoxFilterQuantity";
             textBoxFilterQuantity.Size = new Size(125, 27);
             textBoxFilterQuantity.TabIndex = 27;
+            textBoxFilterQuantity.KeyPress += enableOnlyDigitInput;
             // 
             // label
             // 
@@ -149,6 +150,7 @@
             textBoxFilterPricePerUnit.Name = "textBoxFilterPricePerUnit";
             textBoxFilterPricePerUnit.Size = new Size(125, 27);
             textBoxFilterPricePerUnit.TabIndex = 30;
+            textBoxFilterPricePerUnit.KeyPress += enableOnlyDoubleInput;
             // 
             // comboBox2
             // 
@@ -173,6 +175,7 @@
             textBoxFilterTotalPrice.Name = "textBoxFilterTotalPrice";
             textBoxFilterTotalPrice.Size = new Size(125, 27);
             textBoxFilterTotalPrice.TabIndex = 33;
+            textBoxFilterTotalPrice.KeyPress += enableOnlyDigitInput;
             // 
             // comboBox3
             // 

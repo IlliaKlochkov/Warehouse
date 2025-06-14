@@ -33,7 +33,7 @@ public class Product
 
     public void UpdateTotalPrice()
     {
-        TotalPrice = Quantity * PricePerUnit;
+        TotalPrice = Math.Round(Quantity * PricePerUnit, 2);
     }
 
     public void UpdateInvoiceProduct(bool inbound, int quantityCanged, DateTime lastDeliveryDate)

@@ -18,8 +18,8 @@ namespace Warehouse
 
             if (_database == null)
             {
-                _database = new Database();
-            }
+                _database = new Database(isPrimary: true);
+            } 
             Application.Run(new Workspace(_database));
         }
     }

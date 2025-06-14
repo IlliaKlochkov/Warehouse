@@ -1,4 +1,5 @@
-﻿using System.Reflection.Emit;
+﻿using System.Drawing.Printing;
+using System.Reflection.Emit;
 using Warehouse.DatabaseRepo;
 using Warehouse.Models;
 
@@ -100,7 +101,26 @@ public partial class InvoiceForm : Form
 
     private void ToolStripMenuItem_Print_Click(object sender, EventArgs e)
     {
+        PrintDocument printDoc = new PrintDocument();
+        printDoc.PrintPage += (s, ev) =>
+        {
+            using Font font = new Font("Times New Roman", 14);
+            ev.Graphics.DrawString(
+                WarehouseUtils.InvoiceToString(_invoiceDatabase, checkBox_Inbound.Checked, dateTimePicker.Value), 
+                font, 
+                Brushes.Black,
+                new RectangleF(50, 50, ev.PageBounds.Width - 100, ev.PageBounds.Height - 100)
+                );
+        };
 
+        using PrintDialog printDialog = new PrintDialog
+        {
+            Document = printDoc
+        };
+        if (printDialog.ShowDialog() == DialogResult.OK)
+        {
+            printDoc.Print();
+        }
     }
 
     private void ToolStripMenuItem_ApllyChanges_Click(object sender, EventArgs e)

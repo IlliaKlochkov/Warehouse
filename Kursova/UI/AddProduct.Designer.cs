@@ -76,7 +76,7 @@
             textBox_PricePerUnit.Name = "textBox_PricePerUnit";
             textBox_PricePerUnit.Size = new Size(152, 27);
             textBox_PricePerUnit.TabIndex = 5;
-            textBox_PricePerUnit.KeyPress += enableOnlyDigitInput;
+            textBox_PricePerUnit.KeyPress += enableOnlyDoubleInput;
             // 
             // label1
             // 

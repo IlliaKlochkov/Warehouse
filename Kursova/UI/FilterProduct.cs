@@ -95,33 +95,25 @@ namespace Warehouse.UI
             throw new FormatException($"Неправильне числове значення: {text}");
         }
 
-        private void EnableOnlyDigitInput(object sender, KeyPressEventArgs e)
+        private void enableOnlyLetterInput(object sender, KeyPressEventArgs e)
         {
-            // Дозволяємо цифри, крапку, кому та Backspace для десяткових чисел
-            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back &&
-                e.KeyChar != '.' && e.KeyChar != ',')
+            if (!char.IsLetter(e.KeyChar) && e.KeyChar != (char)Keys.Back)
             {
                 e.Handled = true;
             }
         }
 
-        private void textBoxFilterQuantity_KeyPress(object sender, KeyPressEventArgs e)
+        private void enableOnlyDigitInput(object sender, KeyPressEventArgs e)
         {
-            // Для кількості дозволяємо тільки цілі числа
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
             {
                 e.Handled = true;
             }
         }
 
-        private void textBoxFilterPricePerUnit_KeyPress(object sender, KeyPressEventArgs e)
+        private void enableOnlyDoubleInput(object sender, KeyPressEventArgs e)
         {
-            EnableOnlyDigitInput(sender, e);
-        }
-
-        private void textBoxFilterTotalPrice_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            EnableOnlyDigitInput(sender, e);
+            WarehouseUtils.enableOnlyDoubleInput(sender, e, textBoxFilterPricePerUnit);
         }
     }
 }

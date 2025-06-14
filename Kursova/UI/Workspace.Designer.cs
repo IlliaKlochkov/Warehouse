@@ -241,6 +241,7 @@
             друкToolStripMenuItem.Size = new Size(168, 60);
             друкToolStripMenuItem.Text = "Друк ";
             друкToolStripMenuItem.TextImageRelation = TextImageRelation.Overlay;
+            друкToolStripMenuItem.Click += ToolStripMenuItem_Print_Click;
             // 
             // Workspace
             // 

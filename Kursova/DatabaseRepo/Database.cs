@@ -15,10 +15,11 @@ public class Database
     public bool _isFiltered = false;
     public bool _isOnlyAvailable = false;
 
-    // Додаємо події для повідомлення про зміни сортування
+    public bool isPrimary { get; set; }
+
     public event Action<string, SortOrder> SortChanged;
 
-    public Database(int AutoIncrementId = 0)
+    public Database(int AutoIncrementId = 0, bool isPrimary = false)
     {
         this.AutoIncrementId = AutoIncrementId;
         WarehouseTableData = new List<Product>();
@@ -26,6 +27,7 @@ public class Database
         _filteredData = new List<Product>();
 
         RefreshView();
+        this.isPrimary = isPrimary;
     }
 
 
@@ -82,6 +84,8 @@ public class Database
         {
             WarehouseTableView.Add(product);
         }
+
+        if (isPrimary) DatabaseManager.SaveData(this);
     }
 
     public void RemoveProduct(Product product)
@@ -97,9 +101,11 @@ public class Database
         {
             _filteredData.Remove(product);
         }
+
+        if (isPrimary) DatabaseManager.SaveData(this);
     }
 
-    public void EditProduct(int id, string name, string measureUnit, int pricePerUnit, int Quantity)
+    public void EditProduct(int id, string name, string measureUnit, double pricePerUnit, int Quantity)
     {
         int productIndex = GetProductIndexById(id);
 
@@ -113,19 +119,8 @@ public class Database
         product.UpdateTotalPrice();
 
         NotifyItemChanged(product);
-    }
 
-    public void EditQuantity(int id, int quantity)
-    {
-        int productIndex = GetProductIndexById(id);
-
-        if (!IsValidIndex(productIndex)) return;
-
-        var product = this[productIndex];
-        product.Quantity += quantity;
-        product.LastDeliveryDate = DateTime.Now;
-
-        NotifyItemChanged(product);
+        if (isPrimary) DatabaseManager.SaveData(this);
     }
 
     private void NotifyItemChanged(Product product)
@@ -202,7 +197,6 @@ public class Database
     {
         var dataToShow = _isFiltered ? _filteredData : WarehouseTableData;
 
-        // RaiseListChangedEvents для більш плавного оновлення
         WarehouseTableView.RaiseListChangedEvents = false;
         WarehouseTableView.Clear();
         foreach (var product in dataToShow)
@@ -264,7 +258,6 @@ public class Database
                 return;
         }
 
-        // Оновлюємо відповідний список
         if (_isFiltered)
         {
             _filteredData = sortedList;
@@ -274,20 +267,18 @@ public class Database
             WarehouseTableData = sortedList;
         }
 
-        // Використовуємо більш м'яке оновлення замість RefreshView()
-        //WarehouseTableView.RaiseListChangedEvents = false;
+
         WarehouseTableView.Clear();
         foreach (var product in sortedList)
         {
             WarehouseTableView.Add(product);
         }
-        //WarehouseTableView.RaiseListChangedEvents = true;
+
         WarehouseTableView.ResetBindings();
 
 
         RefreshView();
 
-        // Повідомляємо про зміну сортування
         SortChanged?.Invoke(parametr, sortOrder);
     }
 

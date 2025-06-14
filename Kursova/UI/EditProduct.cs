@@ -41,7 +41,7 @@ public partial class EditProduct : Form
     {
         string name = textBoxEditName.Text;
         string measureUnit = textBoxEditMeasureUnit.Text;
-        int pricePerUnit = (int)double.Parse(textBoxEditPricePerUnit.Text);
+        double pricePerUnit = double.Parse(textBoxEditPricePerUnit.Text);
         int quantity = (int)double.Parse(textBoxEditQuantity.Text);
 
         _database.EditProduct(productId, name, measureUnit, pricePerUnit, quantity);
@@ -63,6 +63,11 @@ public partial class EditProduct : Form
         {
             e.Handled = true;
         }
+    }
+
+    private void enableOnlyDoubleInput(object sender, KeyPressEventArgs e)
+    {
+        WarehouseUtils.enableOnlyDoubleInput(sender, e, textBoxEditPricePerUnit);
     }
 }
 

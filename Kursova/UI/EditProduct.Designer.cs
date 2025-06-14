@@ -93,7 +93,7 @@
             textBoxEditPricePerUnit.Name = "textBoxEditPricePerUnit";
             textBoxEditPricePerUnit.Size = new Size(144, 27);
             textBoxEditPricePerUnit.TabIndex = 17;
-            textBoxEditPricePerUnit.KeyPress += enableOnlyDigitInput;
+            textBoxEditPricePerUnit.KeyPress += enableOnlyDoubleInput;
             // 
             // textBoxEditMeasureUnit
             // 
