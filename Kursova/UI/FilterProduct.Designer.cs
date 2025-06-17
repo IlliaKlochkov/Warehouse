@@ -121,6 +121,7 @@
             // textBoxFilterQuantity
             // 
             textBoxFilterQuantity.Location = new Point(337, 199);
+            textBoxFilterQuantity.MaxLength = 9;
             textBoxFilterQuantity.Name = "textBoxFilterQuantity";
             textBoxFilterQuantity.Size = new Size(125, 27);
             textBoxFilterQuantity.TabIndex = 27;
@@ -147,6 +148,7 @@
             // textBoxFilterPricePerUnit
             // 
             textBoxFilterPricePerUnit.Location = new Point(340, 263);
+            textBoxFilterPricePerUnit.MaxLength = 9;
             textBoxFilterPricePerUnit.Name = "textBoxFilterPricePerUnit";
             textBoxFilterPricePerUnit.Size = new Size(125, 27);
             textBoxFilterPricePerUnit.TabIndex = 30;
@@ -172,6 +174,7 @@
             // textBoxFilterTotalPrice
             // 
             textBoxFilterTotalPrice.Location = new Point(100, 263);
+            textBoxFilterTotalPrice.MaxLength = 9;
             textBoxFilterTotalPrice.Name = "textBoxFilterTotalPrice";
             textBoxFilterTotalPrice.Size = new Size(125, 27);
             textBoxFilterTotalPrice.TabIndex = 33;

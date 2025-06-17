@@ -2,7 +2,7 @@
 using System.Text.Json;
 namespace Warehouse.DatabaseRepo;
 
-class DatabaseManager
+class DatabaseManager // Клас для збереження та завантаження з файлу даних бази
 {
     private const string filePath = "warehouseDatabase.json";
 

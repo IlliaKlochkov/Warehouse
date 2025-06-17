@@ -4,7 +4,7 @@ using Warehouse.Models;
 
 namespace Warehouse.DatabaseRepo;
 
-public class Database
+public class Database // Клас бази даних для зберігання товарів
 {
     public List<Product> WarehouseTableData { get; set; }
     [JsonIgnore]

@@ -184,6 +184,7 @@
             // toolStripTextBox_SearchByName
             // 
             toolStripTextBox_SearchByName.Margin = new Padding(1, 10, 1, 0);
+            toolStripTextBox_SearchByName.MaxLength = 128;
             toolStripTextBox_SearchByName.Name = "toolStripTextBox_SearchByName";
             toolStripTextBox_SearchByName.Size = new Size(160, 27);
             toolStripTextBox_SearchByName.KeyDown += toolStripTextBox_SearchByName_KeyDown;

@@ -48,6 +48,7 @@
             // 
             textBox_Name.Enabled = false;
             textBox_Name.Location = new Point(12, 188);
+            textBox_Name.MaxLength = 128;
             textBox_Name.Name = "textBox_Name";
             textBox_Name.Size = new Size(330, 27);
             textBox_Name.TabIndex = 0;
@@ -56,6 +57,7 @@
             // 
             textBox_MeasureUnit.Enabled = false;
             textBox_MeasureUnit.Location = new Point(12, 250);
+            textBox_MeasureUnit.MaxLength = 128;
             textBox_MeasureUnit.Name = "textBox_MeasureUnit";
             textBox_MeasureUnit.Size = new Size(160, 27);
             textBox_MeasureUnit.TabIndex = 3;
@@ -64,6 +66,7 @@
             // textBox_Quantity
             // 
             textBox_Quantity.Location = new Point(12, 312);
+            textBox_Quantity.MaxLength = 9;
             textBox_Quantity.Name = "textBox_Quantity";
             textBox_Quantity.Size = new Size(330, 27);
             textBox_Quantity.TabIndex = 4;
@@ -73,6 +76,7 @@
             // 
             textBox_PricePerUnit.Enabled = false;
             textBox_PricePerUnit.Location = new Point(190, 250);
+            textBox_PricePerUnit.MaxLength = 9;
             textBox_PricePerUnit.Name = "textBox_PricePerUnit";
             textBox_PricePerUnit.Size = new Size(152, 27);
             textBox_PricePerUnit.TabIndex = 5;

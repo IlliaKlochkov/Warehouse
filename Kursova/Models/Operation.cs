@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Warehouse.Models;
 
-public enum OperationType
+public enum OperationType 
 {
     Inbound,
     Outbound,
     WritedOff,
     Added
 }
-public class Operation
+public class Operation // Базовий клас операції над продуктом
 {
     public OperationType OperationType { get; set; }
     public DateTime DateTime { get; set; }

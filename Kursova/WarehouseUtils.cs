@@ -4,7 +4,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Warehouse;
 
-public class WarehouseUtils
+public class WarehouseUtils // Допоміжний клас для різних утилітних функцій
 {
     public static void GenerateProductComboBox(Database database, ComboBox comboBox)
     {

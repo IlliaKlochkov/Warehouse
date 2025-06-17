@@ -90,6 +90,7 @@
             // textBoxEditPricePerUnit
             // 
             textBoxEditPricePerUnit.Location = new Point(187, 142);
+            textBoxEditPricePerUnit.MaxLength = 9;
             textBoxEditPricePerUnit.Name = "textBoxEditPricePerUnit";
             textBoxEditPricePerUnit.Size = new Size(144, 27);
             textBoxEditPricePerUnit.TabIndex = 17;
@@ -98,6 +99,7 @@
             // textBoxEditMeasureUnit
             // 
             textBoxEditMeasureUnit.Location = new Point(12, 142);
+            textBoxEditMeasureUnit.MaxLength = 128;
             textBoxEditMeasureUnit.Name = "textBoxEditMeasureUnit";
             textBoxEditMeasureUnit.Size = new Size(142, 27);
             textBoxEditMeasureUnit.TabIndex = 15;
@@ -106,6 +108,7 @@
             // textBoxEditName
             // 
             textBoxEditName.Location = new Point(12, 75);
+            textBoxEditName.MaxLength = 128;
             textBoxEditName.Name = "textBoxEditName";
             textBoxEditName.Size = new Size(319, 27);
             textBoxEditName.TabIndex = 13;
@@ -123,6 +126,7 @@
             // 
             textBoxEditQuantity.Enabled = false;
             textBoxEditQuantity.Location = new Point(12, 202);
+            textBoxEditQuantity.MaxLength = 9;
             textBoxEditQuantity.Name = "textBoxEditQuantity";
             textBoxEditQuantity.Size = new Size(319, 27);
             textBoxEditQuantity.TabIndex = 25;
